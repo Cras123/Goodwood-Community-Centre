@@ -108,12 +108,12 @@ const Header = () => {
                     <ul className="flex flex-col pl-4">
                       <li>
                         <Link href="/booking/room" className="text-sm">
-                          Room Booking
+                          Booking services
                         </Link>
                       </li>
                       <li>
                         <Link href="/booking/event" className="text-sm">
-                          Event Booking
+                          Booking Events
                         </Link>
                       </li>
                     </ul>
@@ -152,7 +152,7 @@ const Header = () => {
                             href="/booking/room"
                             className="block px-4 py-2 hover:bg-gray-100"
                           >
-                            Room Booking
+                            Services Booking
                           </Link>
                         </li>
                         <li>
