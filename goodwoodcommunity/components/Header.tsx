@@ -20,7 +20,7 @@ const Header = () => {
   // Navigation items array
   const navItems = [
     { name: "Home", href: "/" },
-    { name: "About Us", href: "/about" },
+    { name: "About Us", href: "/AboutUs" },
     { name: "Booking", href: "#", hasDropdown: true },
     { name: "Hall Hire", href: "/hall-hire" },
     { name: "Membership", href: "/membership" },
