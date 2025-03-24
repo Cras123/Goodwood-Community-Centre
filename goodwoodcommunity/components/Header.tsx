@@ -95,38 +95,40 @@ const Header = () => {
               </button>
             </div>
             <ul className="flex flex-col h-full gap-4 p-4">
-              {navItems.map((item, index) => (
-                <li
-                  key={index}
-                  className="flex items-center p-1 text-sm gap-x-2 text-slate-600 hover:text-red-500"
-                >
-                  <Link href={item.href} className="flex items-center">
-                    {item.name}
-                  </Link>
-                  {/* Handle dropdown for mobile */}
-                  {item.hasDropdown && (
-                    <ul className="flex flex-col pl-4">
-                      <li>
-                        <Link href="/booking/room" className="text-sm">
-                          Booking services
-                        </Link>
-                      </li>
-                      <li>
-                        <Link href="/booking/event" className="text-sm">
-                          Booking Events
-                        </Link>
-                      </li>
-                    </ul>
-                  )}
-                </li>
-              ))}
+              {navItems.map((item, index) =>
+                item.hasDropdown ? (
+                  // Instead of showing the parent "Booking", directly render its children.
+                  <React.Fragment key={index}>
+                    <li className="flex items-center p-1 text-sm gap-x-2 text-slate-600 hover:text-red-500">
+                      <Link href="/booking/room" className="flex items-center">
+                        Booking Services
+                      </Link>
+                    </li>
+                    <li className="flex items-center p-1 text-sm gap-x-2 text-slate-600 hover:text-red-500">
+                      <Link href="/booking/event" className="flex items-center">
+                        Booking Events
+                      </Link>
+                    </li>
+                  </React.Fragment>
+                ) : (
+                  <li
+                    key={index}
+                    className="flex items-center p-1 text-sm gap-x-2 text-slate-600 hover:text-red-500"
+                  >
+                    <Link href={item.href} className="flex items-center">
+                      {item.name}
+                    </Link>
+                  </li>
+                )
+              )}
               <li className="mt-4">
-                <button className="bg-[#27AE60] hover:bg-[#006B1A] text-white px-8 py-2 rounded-md ">
+                <button className="bg-[#27AE60] hover:bg-[#006B1A] text-white px-8 py-2 rounded-md">
                   Login
                 </button>
               </li>
             </ul>
           </div>
+
           {/* Desktop Menu */}
           <div className="hidden lg:block">
             <ul className="flex flex-col gap-2 mt-2 mb-4 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-6">
