@@ -1,13 +1,18 @@
 import Hero from "@/sections/Hero";
-import Posts from "@/sections/Posts";
+import Cards from "@/sections/Cards";
 import Image from "next/image";
+import UpcomingEvents from "@/sections/UpcommingEvents";
+import Services from "@/sections/Services";
+import HallHireSection from "@/sections/HallHire";
 
 export default function Home() {
   return (
     <>
       <Hero />
-
-      <Posts />
+      <Cards />
+      <UpcomingEvents />
+      <Services />
+      <HallHireSection />
       <div className="p-6">
         <h2 className="text-2xl font-bold mb-4">Long Content for Scrolling</h2>
         <p className="text-gray-700 leading-relaxed">
