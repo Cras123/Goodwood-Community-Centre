@@ -1,13 +1,14 @@
 "use client";
 import React, { useEffect } from "react";
 import { heroSlides } from "@/data/data";
-
+import { motion } from "framer-motion"; // Import Framer Motion
 import AOS from "aos";
 import { Swiper, SwiperSlide } from "swiper/react";
 
 import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
+import "aos/dist/aos.css";
 
 import { Autoplay, Pagination, Navigation } from "swiper/modules";
 import HeroSlide from "@/components/HeroSlide";
@@ -23,10 +24,15 @@ const Hero = () => {
   }, []);
 
   return (
-    <section id="hero-slider" className="bg-gray-100 relative">
-      <div className="container mx-auto px-4 h-screen">
-        {" "}
-        {/* Full height */}
+    // Use motion.section for dynamic animation
+    <motion.section
+      id="hero-slider"
+      className="bg-gray-100 relative mt-20"
+      initial={{ opacity: 0, y: 50 }} // start slightly down and transparent
+      animate={{ opacity: 1, y: 0 }} // animate to full opacity and original position
+      transition={{ duration: 1.5, ease: "easeOut" }}
+    >
+      <div className="container mx-auto px-4">
         <Swiper
           spaceBetween={20}
           slidesPerView={"auto"}
@@ -44,7 +50,7 @@ const Hero = () => {
           }}
           modules={[Autoplay, Pagination, Navigation]}
           loop={true}
-          className="sliderFeaturedPosts h-full" // Ensures full height
+          className="sliderFeaturedPosts"
         >
           {heroSlides.map((slide) => (
             <SwiperSlide
@@ -55,21 +61,21 @@ const Hero = () => {
             </SwiperSlide>
           ))}
         </Swiper>
-        {/* Pagination Bullets */}
-        <div className="swiper-pagination mt-4"></div>
         {/* Custom Navigation Buttons */}
-        <div className="absolute top-1/2 left-4 -translate-y-1/2 z-10">
+        <div className="absolute top-1/4 left-4 -translate-y-1/2 z-10">
           <button className="custom-swiper-button-prev bg-gray-800 text-white p-3 rounded-full shadow-md hover:bg-gray-700">
             ❮
           </button>
         </div>
-        <div className="absolute top-1/2 right-4 -translate-y-1/2 z-10">
+        <div className="absolute top-1/4 right-4 -translate-y-1/2 z-10">
           <button className="custom-swiper-button-next bg-gray-800 text-white p-3 rounded-full shadow-md hover:bg-gray-700">
             ❯
           </button>
         </div>
+        {/* Pagination Bullets */}
+        <div className="swiper-pagination !bottom-8"></div>
       </div>
-    </section>
+    </motion.section>
   );
 };
 
