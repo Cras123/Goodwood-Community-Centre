@@ -108,10 +108,11 @@ const Chatbot: React.FC = () => {
       <div className={`chat-window ${isOpen ? "open" : ""}`}>
         <div className="chat-header">
           <span>Chat with Agent Goodwood</span>
+
           <button
-            onClick={toggleChat}
-            className="close-btn"
-            aria-label="Close chat"
+            onClick={() => setIsOpen(false)}
+            className="absolute top-2 right-2 text-gray-600 hover:text-gray-800"
+            aria-label="Close Chatbot"
           >
             <FaTimes />
           </button>
