@@ -26,7 +26,7 @@ const Header = () => {
     { name: "Booking", href: "#", hasDropdown: true },
     { name: "Hall Hire", href: "/hall-hire" },
     { name: "Membership", href: "/membership" },
-    { name: "Contact Us", href: "/ContactUs" },
+    { name: "Contact Us", href: "/Contactus" },
   ];
 
   return (
