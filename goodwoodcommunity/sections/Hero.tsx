@@ -52,12 +52,9 @@ const Hero = () => {
           loop={true}
           className="sliderFeaturedPosts"
         >
-          {heroSlides.map((slide) => (
-            <SwiperSlide
-              key={slide.id}
-              className="h-full flex items-center justify-center"
-            >
-              <HeroSlide slide={slide} />
+          {heroSlides.map((slide, index) => (
+            <SwiperSlide key={slide.id} className="h-full">
+              <HeroSlide slide={slide} index={index} />
             </SwiperSlide>
           ))}
         </Swiper>

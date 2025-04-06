@@ -311,6 +311,11 @@ const ContactUs: React.FC = () => {
 
       {/* Chatbot Component */}
       <Chatbot />
+
+      {/* Footer */}
+      <footer className="bg-gray-900 text-white text-center p-4 mt-10">
+        <p>© 2025 Goodwood Community Services. All rights reserved.</p>
+      </footer>
     </div>
   );
 };

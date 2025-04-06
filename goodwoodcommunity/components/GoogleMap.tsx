@@ -1,43 +1,22 @@
 "use client";
 
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
-import "leaflet/dist/leaflet.css";
-import { LatLngExpression } from "leaflet";
-import { Icon } from "leaflet";
-const position: LatLngExpression = [-42, 146.8087]; // Default coordinates
-
-const customIcon = new Icon({
-  iconUrl: "/map/marker-icon.png", // Path to your custom icon
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-  popupAnchor: [1, -34],
-  shadowSize: [41, 41],
-});
 const GoogleMapComponent = () => {
+  const googleMapsEmbedUrl =
+    "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3148.984901173356!2d147.2878983158149!3d-42.83057797915791!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xaa6e75e6b11f5f6b%3A0x75c6a8e2b5f0f861!2s20%20Acton%20Cres%2C%20Goodwood%20TAS%207010%2C%20Australia!5e0!3m2!1sen!2sus!4v1678886655000!5m2!1sen!2sus";
+
   return (
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        width: "100%",
-      }}
-    >
-      <MapContainer
-        center={position}
-        zoom={13}
-        style={{
-          height: "200px", // Adjust height
-          width: "80%", // Adjust width
-          maxWidth: "600px", // Limit max width
-          margin: "auto",
-        }}
-      >
-        <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-        <Marker position={position} icon={customIcon}>
-          <Popup>We are here!</Popup>
-        </Marker>
-      </MapContainer>
+    <div className="w-full h-80 overflow-hidden rounded-lg border border-gray-300 px-4 shadow-md">
+      <iframe
+        src={googleMapsEmbedUrl}
+        width="100%"
+        height="100%"
+        allowFullScreen
+        loading="lazy"
+        className="w-full h-full"
+        style={{ border: 0 }}
+        referrerPolicy="no-referrer-when-downgrade"
+        title="Goodwood Community Centre Location Map"
+      ></iframe>
     </div>
   );
 };

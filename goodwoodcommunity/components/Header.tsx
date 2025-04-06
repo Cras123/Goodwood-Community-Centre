@@ -41,8 +41,8 @@ const Header = () => {
                 <Image
                   src="/goodwood_photos/logo.png"
                   alt="Logo"
-                  width={75}
-                  height={25}
+                  width={85}
+                  height={45}
                 />
               </Link>
 
@@ -79,7 +79,7 @@ const Header = () => {
 
           {/* Mobile Menu Drawer */}
           <div
-            className={`fixed top-0 left-0 min-h-screen w-64 bg-slate-100 shadow-lg transform transition-transform duration-300 ease-in-out ${
+            className={`fixed top-0 left-0 min-h-screen w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out ${
               isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"
             } lg:hidden z-50`}
           >
@@ -91,13 +91,15 @@ const Header = () => {
                 <Image
                   src="/goodwood_photos/logo.png"
                   alt="Logo"
-                  width={100}
+                  width={85}
                   height={50}
                 />
               </Link>
               <button
                 onClick={toggleMobileMenu}
-                className="absolute top-4 right-4 text-slate-600 hover:text-red-500"
+                className="absolute top-4 right-4 text-slate-600 hover:text-[#00aba9]
+
+"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -119,12 +121,20 @@ const Header = () => {
               {navItems.map((item, index) =>
                 item.hasDropdown ? (
                   <React.Fragment key={index}>
-                    <li className="flex items-center p-1 text-md gap-x-2 text-slate-600 hover:text-red-500">
+                    <li
+                      className="flex items-center p-1 text-md gap-x-2 text-slate-600 hover:text-[#00aba9]
+
+"
+                    >
                       <Link href="/booking/room" className="flex items-center">
                         Booking Services
                       </Link>
                     </li>
-                    <li className="flex items-center p-1 text-md gap-x-2 text-slate-600 hover:text-red-500">
+                    <li
+                      className="flex items-center p-1 text-md gap-x-2 text-slate-600 hover:text-[#00aba9]
+
+"
+                    >
                       <Link href="/booking/event" className="flex items-center">
                         Booking Events
                       </Link>
@@ -133,7 +143,9 @@ const Header = () => {
                 ) : (
                   <li
                     key={index}
-                    className="flex items-center p-1 text-md gap-x-2 text-slate-600 hover:text-red-500"
+                    className="flex items-center p-1 text-md gap-x-2 text-slate-600 hover:text-[#00aba9]
+
+"
                   >
                     <Link href={item.href} className="flex items-center">
                       {item.name}
@@ -145,7 +157,7 @@ const Header = () => {
                 {/* Right Section: Search and Login */}
                 <div className="flex space-x-4">
                   <div>
-                    <button className="bg-[#27AE60] hover:bg-[#006B1A] text-white px-8 py-2 rounded-md">
+                    <button className="bg-[#00aba9] hover:bg-[#23677c] text-white px-8 py-2 rounded-md">
                       Login
                     </button>
                   </div>
@@ -160,12 +172,12 @@ const Header = () => {
             <div className="flex-1">
               <Link
                 href="/"
-                className="block cursor-pointer py-1.5 text-[#27AE60] font-bold text-2xl"
+                className="block cursor-pointer py-1.5 text-[#00aba9] font-bold text-2xl"
               >
                 <Image
                   src="/goodwood_photos/logo.png"
                   alt="Logo"
-                  width={75}
+                  width={85}
                   height={50}
                 />
               </Link>
@@ -177,7 +189,11 @@ const Header = () => {
                 {navItems.map((item, index) =>
                   item.hasDropdown ? (
                     <li key={index} className="relative group inline-block">
-                      <div className="flex items-center p-1 text-lg text-slate-600 hover:text-red-500 cursor-default">
+                      <div
+                        className="flex items-center p-1 text-lg text-slate-600 hover:text-[#00aba9]
+
+ cursor-default"
+                      >
                         {item.name}
                         {/* Down Arrow Icon */}
                         <svg
@@ -185,7 +201,7 @@ const Header = () => {
                           className="w-4 h-4 ml-1 fill-current"
                           viewBox="0 0 20 20"
                         >
-                          <path d="M5.23 7.21a.75.75 0 011.06.02L10 10.586l3.71-3.354a.75.75 0 111.02 1.1l-4.25 3.85a.75.75 0 01-1.02 0l-4.25-3.85a.75.75 0 01.02-1.06z" />
+                          <path d="M5.23 7.21a.75.75 0 011.06.02L10 10.586l3.71-3.354a.75.75 0 111.02 1.1l-4.45 3.85a.75.75 0 01-1.02 0l-4.45-3.85a.75.75 0 01.02-1.06z" />
                         </svg>
                       </div>
                       {/* Dropdown Menu on Hover */}
@@ -213,7 +229,9 @@ const Header = () => {
                   ) : (
                     <li
                       key={index}
-                      className="flex items-center p-1 text-lg gap-x-2 text-slate-600 hover:text-red-500 whitespace-nowrap"
+                      className="flex items-center p-1 text-lg gap-x-2 text-slate-600 hover:text-[#00aba9]
+
+ whitespace-nowrap"
                     >
                       <Link href={item.href} className="flex items-center">
                         {item.name}
@@ -229,7 +247,7 @@ const Header = () => {
               <div className="mr-4">
                 <Search />
               </div>
-              <button className="bg-[#27AE60] hover:bg-[#006B1A] text-white px-8 py-2 rounded-md shadow-md transition-all duration-300 transform hover:scale-105 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+              <button className="bg-[#00aba9] hover:bg-[#23677c] text-white px-8 py-2 rounded-md shadow-md transition-all duration-300 transform hover:scale-105 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-green-500">
                 Login
               </button>
             </div>

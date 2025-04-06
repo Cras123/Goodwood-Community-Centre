@@ -19,44 +19,31 @@ export const scis = [
 export const heroSlides = [
   {
     id: 1,
-    bgImg: "/img/post-slide-1.jpg",
-    title: "The Best Homemade Masks for Face (keep the Pimples Away)",
-    brief: `Lorem ipsum dolor sit amet, consectetur adipisicing
-    elit. Quidem neque est mollitia! Beatae minima assumenda
-    repellat harum vero, officiis ipsam magnam obcaecati
-    cumque maxime inventore repudiandae quidem
-    necessitatibus rem atque.`,
+    bgImg: "/goodwood_photos/hero11.png",
+    title: "We are here to grow learn and travel",
+    brief: ``,
   },
   {
     id: 2,
-    bgImg: "/img/post-slide-2.jpg",
-    title:
-      "17 Pictures of Medium Length Hair in Layers That Will Inspire Your New Haircut",
-    brief: `Lorem ipsum dolor sit amet, consectetur adipisicing
-    elit. Quidem neque est mollitia! Beatae minima assumenda
-    repellat harum vero, officiis ipsam magnam obcaecati
-    cumque maxime inventore repudiandae quidem
-    necessitatibus rem atque.`,
+    bgImg: "/goodwood_photos/hero2.png",
+    title: `OPEN
+     MON – FRI
+  9AM – 4PM
+  Available for hire
+  SAT & SUN`,
+    brief: "",
   },
   {
     id: 3,
-    bgImg: "/img/post-slide-3.jpg",
-    title: "9 Half-up/half-down Hairstyles for Long and Medium Hair",
-    brief: `Lorem ipsum dolor sit amet, consectetur adipisicing
-    elit. Quidem neque est mollitia! Beatae minima assumenda
-    repellat harum vero, officiis ipsam magnam obcaecati
-    cumque maxime inventore repudiandae quidem
-    necessitatibus rem atque.`,
+    bgImg: "/goodwood_photos/hero3.png",
+    title: "",
+    brief: ``,
   },
   {
     id: 4,
-    bgImg: "/img/post-slide-4.jpg",
-    title: "13 Amazing Poems from Shel Silverstein with Valuable Life Lessons",
-    brief: `Lorem ipsum dolor sit amet, consectetur adipisicing
-    elit. Quidem neque est mollitia! Beatae minima assumenda
-    repellat harum vero, officiis ipsam magnam obcaecati
-    cumque maxime inventore repudiandae quidem
-    necessitatibus rem atque.`,
+    bgImg: "/goodwood_photos/hero4.png",
+    title: "",
+    brief: ``,
   },
 ];
 
