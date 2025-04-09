@@ -27,7 +27,7 @@ const Hero = () => {
     // Use motion.section for dynamic animation
     <motion.section
       id="hero-slider"
-      className="bg-gray-100 relative mt-20"
+      className="bg-gray-100 relative pt-10"
       initial={{ opacity: 0, y: 50 }} // start slightly down and transparent
       animate={{ opacity: 1, y: 0 }} // animate to full opacity and original position
       transition={{ duration: 1.5, ease: "easeOut" }}

@@ -15,12 +15,6 @@ export default function Home() {
       <Services />
       <HallHireSection />
       <GoogleMapComponent />
-      <p className="p-2.5">
-        Lorem ipsum, dolor sit amet consectetur adipisicing elit. Libero
-        inventore dolore animi error architecto, odio voluptates soluta
-        quibusdam neque facilis quos aliquam earum nam obcaecati odit
-        voluptatem! Quia, inventore delectus!
-      </p>
     </>
   );
 }
