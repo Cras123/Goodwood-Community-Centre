@@ -70,7 +70,7 @@ const AboutUs: React.FC = () => {
       {/* Hero Section with Banner Image & Animations */}
       <motion.div
         className="relative h-64 md:h-96 bg-cover bg-center overflow-hidden"
-        style={{ backgroundImage: "url('/community-garden.jpg')" }}
+        style={{ backgroundImage: "url('/goodwood_photos/hero3.png')" }}
         ref={heroAnimation.ref}
         initial="hidden"
         animate={heroAnimation.controls}
