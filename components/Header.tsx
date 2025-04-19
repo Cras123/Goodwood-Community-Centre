@@ -126,7 +126,7 @@ const Header = () => {
 
 "
                     >
-                      <Link href="/booking/room" className="flex items-center">
+                      <Link href="/services" className="flex items-center">
                         Booking Services
                       </Link>
                     </li>
@@ -135,7 +135,7 @@ const Header = () => {
 
 "
                     >
-                      <Link href="/booking/event" className="flex items-center">
+                      <Link href="/events" className="flex items-center">
                         Booking Events
                       </Link>
                     </li>
@@ -209,7 +209,7 @@ const Header = () => {
                         <ul>
                           <li>
                             <Link
-                              href="/booking/room"
+                              href="/services"
                               className="block px-4 py-2 hover:bg-gray-100"
                             >
                               Services Booking
@@ -217,7 +217,7 @@ const Header = () => {
                           </li>
                           <li>
                             <Link
-                              href="/booking/event"
+                              href="/events"
                               className="block px-4 py-2 hover:bg-gray-100"
                             >
                               Event Booking

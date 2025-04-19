@@ -89,7 +89,7 @@ const MembershipPage: React.FC = () => {
       <section className="relative h-[80vh] flex items-center">
         <div className="absolute inset-0 z-0">
           <Image
-            src="/membership.png"
+            src="/img/events.jpg"
             alt="Membership at Goodwood Community Centre"
             fill
             quality={100}

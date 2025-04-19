@@ -1,6 +1,6 @@
 // src/components/HireHall/RulesSection.tsx
 import React from 'react';
-import { HallRules } from '../../app/types/hallTypes'; // Import the type
+import { HallRules } from '@/app/types/hallTypes'; // Import the type
 
 interface RulesSectionProps {
   rules: HallRules | null; // Prop takes HallRules object or null
@@ -16,7 +16,7 @@ const RulesSection: React.FC<RulesSectionProps> = ({ rules }) => {
        {/* Conditions of Hire Section */}
        <div className="mb-6">
          <h4 className="text-xl font-semibold text-gray-700 mb-3">Conditions of Hire</h4>
-         <ul className="space-y-2 text-gray-700 list-disc list-outside ml-5 mb-4">
+         <ul className="space-y-2 text-Sray-700 list-disc list-outside ml-5 mb-4">
            {rules.conditions.map((rule, index) => (
              <li key={index} dangerouslySetInnerHTML={{ __html: rule }}></li>
            ))}

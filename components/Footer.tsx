@@ -24,6 +24,14 @@ export default function Footer() {
             © {new Date().getFullYear()} Goodwood Community Centre | ABN
             89459396771 | Reg. No. XXXXXXX
           </p>
+
+          <Link rel="stylesheet" href="/events/create">
+            create{" "}
+          </Link>
+
+          <Link rel="stylesheet" href="/services/add">
+            add{" "}
+          </Link>
         </div>
 
         {/* Social Links (arranged vertically) */}
