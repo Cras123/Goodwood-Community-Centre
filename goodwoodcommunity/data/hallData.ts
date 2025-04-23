@@ -1,5 +1,5 @@
 // src/data/hallData.ts
-import { Hall, HallRules } from "@/types/hallTypes";
+import { Hall, HallRules } from "@/app/types/hallTypes";
 
 // Extracted information, including from Hall Hire contract.pdf [cite: 1]
 export const halls: Hall[] = [

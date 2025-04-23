@@ -1,6 +1,6 @@
 // src/components/HireHall/AvailabilityViewer.tsx
 import React from 'react';
-import { Hall } from '../../app/types/hallTypes';
+import { Hall } from '@/app/types/hallTypes';
 
 // For a real application, consider using a library like 'react-calendar' or 'react-day-picker'
 // import Calendar from 'react-calendar';

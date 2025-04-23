@@ -1,6 +1,6 @@
 // src/components/HireHall/HallInfo.tsx
 import React from 'react';
-import { Hall } from '../../app/types/hallTypes';// Import the Hall type
+import { Hall } from '@/app/types/hallTypes';// Import the Hall type
 
 interface HallInfoProps {
   hall: Hall | null; // Prop takes a Hall object or null

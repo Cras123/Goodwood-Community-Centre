@@ -67,42 +67,42 @@ const AboutUs: React.FC = () => {
 
   return (
     <div className="flex flex-col min-h-screen">
-      {/* Hero Section with Banner Image & Animations */}
-      <motion.div
-        className="relative h-64 md:h-96 bg-cover bg-center overflow-hidden"
-        style={{ backgroundImage: "url('/goodwood_photos/hero3.png')" }}
-        ref={heroAnimation.ref}
-        initial="hidden"
-        animate={heroAnimation.controls}
-        variants={fadeIn}
-      >
-        <div className="absolute inset-0 bg-black opacity-30"></div>
+      <div className="container mx-auto px-4">
         <motion.div
-          className="absolute inset-0 flex items-center justify-center"
-          initial={{ scale: 0.8, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ duration: 0.8, delay: 0.3 }}
+          className="relative h-64 md:h-96 bg-cover bg-center overflow-hidden rounded-lg shadow-lg"
+          style={{ backgroundImage: "url('/goodwood_photos/hero3.png')" }}
+          ref={heroAnimation.ref}
+          initial="hidden"
+          animate={heroAnimation.controls}
+          variants={fadeIn}
         >
-          <h1 className="text-4xl md:text-6xl text-white font-cursive font-bold text-center px-4">
-            Welcome to Goodwood Community Centre
-          </h1>
-        </motion.div>
-        <motion.div
-          className="absolute bottom-6 left-0 right-0 flex justify-center"
-          initial={{ y: 50, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.8, duration: 0.5 }}
-        >
-          <motion.a
-            href="#join"
-            className="bg-orange-400 hover:bg-orange-500 text-black font-bold py-2 px-6 rounded-md transition duration-300"
-            whileHover={{ scale: 1.1, backgroundColor: "#fb923c" }}
-            whileTap={{ scale: 0.95 }}
+          <div className="absolute inset-0 bg-black opacity-30"></div>
+          <motion.div
+            className="absolute inset-0 flex items-center justify-center"
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ duration: 0.8, delay: 0.3 }}
           >
-            JOIN COMMUNITY
-          </motion.a>
+            <h1 className="text-4xl md:text-6xl text-white font-cursive font-bold text-center px-4">
+              Welcome to Goodwood Community Centre
+            </h1>
+          </motion.div>
+          <motion.div
+            className="absolute bottom-6 left-0 right-0 flex justify-center"
+            initial={{ y: 50, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.8, duration: 0.5 }}
+          >
+            <motion.a
+              href="#join"
+              className="bg-orange-400 hover:bg-orange-500 text-black font-bold py-2 px-6 rounded-md transition duration-300"
+              whileHover={{ scale: 1.1, backgroundColor: "#fb923c" }}
+            >
+              Join Now
+            </motion.a>
+          </motion.div>
         </motion.div>
-      </motion.div>
+      </div>
 
       {/* About Us Section */}
       <section className="py-8">
@@ -409,61 +409,6 @@ const AboutUs: React.FC = () => {
           </motion.div>
         </div>
       </section>
-
-      {/* Footer with Animated Social Links */}
-      <motion.footer
-        className="bg-[#0B2D52] text-white py-6 mt-auto"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.5, delay: 0.2 }}
-      >
-        <div className="container mx-auto px-4">
-          <div className="flex flex-col md:flex-row justify-between items-center">
-            <div className="mb-4 md:mb-0 flex items-center">
-              <motion.img
-                src="/logo-white.svg"
-                alt="Goodwood Logo"
-                className="h-16 mr-4"
-                initial={{ rotate: -10, opacity: 0 }}
-                animate={{ rotate: 0, opacity: 1 }}
-                transition={{ duration: 0.5 }}
-              />
-              <div>
-                <p>© 2025 Goodwood Community Services. All rights reserved.</p>
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <p>For inquiries, feedback, or support, please contact us at:</p>
-              <p>support@goodwoodcommunity.org or call +1 (555) 123-4567</p>
-              <div className="flex space-x-4 mt-4 justify-center md:justify-end">
-                <motion.a
-                  href="#"
-                  className="bg-blue-500 text-white px-3 py-1 rounded flex items-center space-x-2"
-                  whileHover={{ scale: 1.1, backgroundColor: "#3b82f6" }}
-                  whileTap={{ scale: 0.95 }}
-                  initial={{ x: 20, opacity: 0 }}
-                  animate={{ x: 0, opacity: 1 }}
-                  transition={{ delay: 0.3 }}
-                >
-                  <span>Follow on Instagram</span>
-                </motion.a>
-                <motion.a
-                  href="#"
-                  className="bg-blue-700 text-white px-3 py-1 rounded flex items-center space-x-2"
-                  whileHover={{ scale: 1.1, backgroundColor: "#1d4ed8" }}
-                  whileTap={{ scale: 0.95 }}
-                  initial={{ x: 20, opacity: 0 }}
-                  animate={{ x: 0, opacity: 1 }}
-                  transition={{ delay: 0.4 }}
-                >
-                  <span>Follow on Facebook</span>
-                </motion.a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </motion.footer>
     </div>
   );
 };
