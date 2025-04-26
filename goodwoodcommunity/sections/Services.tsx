@@ -1,59 +1,65 @@
 "use client";
-import React, { useState, useRef } from "react";
-import { services } from "@/data/data"; // Assuming services data is stored in this file
-import OverviewCard from "@/components/OverviewCard"; // Import OverviewCard component
+
+import React, { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import OverviewCard from "@/components/OverviewCard";
+
+interface Service {
+  _id: string;
+  title: string;
+  imageUrl: string;
+}
 
 const Services = () => {
+  const [services, setServices] = useState<Service[]>([]);
   const [visibleStartIndex, setVisibleStartIndex] = useState(0);
-  const containerRef = useRef<HTMLDivElement>(null);
+  const [direction, setDirection] = useState(0);
 
   const itemsPerPage = 4;
   const totalItems = services.length;
 
-  // Handle Next Button
+  useEffect(() => {
+    const fetchServices = async () => {
+      try {
+        const res = await fetch("/api/services");
+        const data = await res.json();
+        setServices(data);
+      } catch (error) {
+        console.error("Failed to fetch services:", error);
+      }
+    };
+
+    fetchServices();
+  }, []);
+
   const handleNext = () => {
     if (visibleStartIndex + itemsPerPage < totalItems) {
+      setDirection(-1);
       setVisibleStartIndex(visibleStartIndex + itemsPerPage);
-      if (containerRef.current) {
-        const scrollDistance =
-          containerRef.current.scrollLeft + containerRef.current.offsetWidth;
-        containerRef.current.scrollTo({
-          left: scrollDistance,
-          behavior: "smooth",
-        });
-      }
     }
   };
 
-  // Handle Previous Button
   const handlePrev = () => {
     if (visibleStartIndex > 0) {
+      setDirection(1);
       setVisibleStartIndex(visibleStartIndex - itemsPerPage);
-      if (containerRef.current) {
-        const scrollDistance =
-          containerRef.current.scrollLeft - containerRef.current.offsetWidth;
-        containerRef.current.scrollTo({
-          left: scrollDistance,
-          behavior: "smooth",
-        });
-      }
     }
   };
 
-  // Get the items to display
   const displayedServices = services.slice(
     visibleStartIndex,
     visibleStartIndex + itemsPerPage
   );
 
   return (
-    <section className="my-10">
+    <section className="my-10 px-4">
       <h2 className="text-2xl font-bold text-center mb-6">Our Services</h2>
-      <div className="flex justify-between items-center mb-6">
+
+      <div className="flex justify-between items-center mb-6 max-w-6xl mx-auto">
         <button
           onClick={handlePrev}
           disabled={visibleStartIndex === 0}
-          className="bg-gray-500 text-white p-2 rounded-md hover:bg-gray-600 disabled:bg-gray-300"
+          className="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600 disabled:bg-gray-300"
         >
           &lt; Prev
         </button>
@@ -61,23 +67,31 @@ const Services = () => {
         <button
           onClick={handleNext}
           disabled={visibleStartIndex + itemsPerPage >= totalItems}
-          className="bg-gray-500 text-white p-2 rounded-md hover:bg-gray-600 disabled:bg-gray-300"
+          className="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600 disabled:bg-gray-300"
         >
           Next &gt;
         </button>
       </div>
 
-      {/* Horizontal scroll container */}
-      <div className="overflow-x-auto" ref={containerRef}>
-        <div className="flex space-x-6 justify-center">
-          {displayedServices.map((service, index) => (
-            <OverviewCard
-              key={index}
-              title={service.title}
-              imageSrc={service.imageUrl}
-            />
-          ))}
-        </div>
+      <div className="relative overflow-hidden max-w-6xl mx-auto">
+        <AnimatePresence mode="wait" initial={false}>
+          <motion.div
+            key={visibleStartIndex}
+            initial={{ x: direction > 0 ? -300 : 300, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            exit={{ x: direction > 0 ? 300 : -300, opacity: 0 }}
+            transition={{ duration: 0.5 }}
+            className="flex justify-center gap-6"
+          >
+            {displayedServices.map((service) => (
+              <OverviewCard
+                key={service._id}
+                title={service.title}
+                imageSrc={service.imageUrl}
+              />
+            ))}
+          </motion.div>
+        </AnimatePresence>
       </div>
     </section>
   );

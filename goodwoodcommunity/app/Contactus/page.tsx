@@ -256,10 +256,10 @@ const ContactUs: React.FC = () => {
               <MdEmail className="text-blue-600 w-6" />
               <p>
                 <a
-                  href="mailto:manager@goodwoodcommunitycentre.org.au"
+                  href="mailto:manager@gwcc.org.au"
                   className="text-blue-600 hover:underline"
                 >
-                  manager@goodwoodcommunitycentre.org.au
+                  manager@gwcc.org.au
                 </a>
               </p>
             </div>

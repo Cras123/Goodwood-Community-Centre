@@ -19,7 +19,7 @@ export const scis = [
 export const heroSlides = [
   {
     id: 1,
-    bgImg: "/goodwood_photos/hero11.png",
+    bgImg: "/goodwood_photos/hero1.png",
     title: "We are here to grow learn and travel",
     brief: ``,
   },
@@ -163,7 +163,7 @@ export const services = [
 
 export const hallHire = {
   title: "Hall Hire",
-  imageUrl: "/img/post-potrait-1.jpg",
+  imageUrl: "/img/hallhire.jpg",
 };
 
 // src/data/goodwoodQA.ts

@@ -8,19 +8,13 @@ import GoogleMapComponent from "@/components/GoogleMap";
 
 export default function Home() {
   return (
-    <>
+    <main className="px-4 md:px-8 max-w-7xl mx-auto">
       <Hero />
       <Cards />
       <UpcomingEvents />
       <Services />
       <HallHireSection />
       <GoogleMapComponent />
-      <p className="p-2.5">
-        Lorem ipsum, dolor sit amet consectetur adipisicing elit. Libero
-        inventore dolore animi error architecto, odio voluptates soluta
-        quibusdam neque facilis quos aliquam earum nam obcaecati odit
-        voluptatem! Quia, inventore delectus!
-      </p>
-    </>
+    </main>
   );
 }
