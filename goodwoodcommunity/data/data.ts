@@ -163,7 +163,7 @@ export const services = [
 
 export const hallHire = {
   title: "Hall Hire",
-  imageUrl: "/img/post-potrait-1.jpg",
+  imageUrl: "/img/hallhire.jpg",
 };
 
 // src/data/goodwoodQA.ts
