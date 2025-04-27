@@ -1,11 +1,38 @@
-// AboutUs.tsx
 "use client";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { motion, useAnimation } from "framer-motion";
 import { useInView } from "react-intersection-observer";
+import Link from "next/link";
+interface Staff {
+  _id: string;
+  name: string;
+  role: string;
+  imageUrl: string;
+  quote: string;
+}
 
 const AboutUs: React.FC = () => {
-  // Animation variants
+  const [staffList, setStaffList] = useState<Staff[]>([]);
+
+  useEffect(() => {
+    const fetchStaff = async () => {
+      try {
+        const res = await fetch("/api/staff");
+
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+
+        const data = await res.json();
+        setStaffList(data);
+      } catch (error) {
+        console.error("Failed to fetch staff:", error);
+      }
+    };
+
+    fetchStaff();
+  }, []);
+
   const fadeIn = {
     hidden: { opacity: 0 },
     visible: { opacity: 1, transition: { duration: 0.6 } },
@@ -27,13 +54,8 @@ const AboutUs: React.FC = () => {
   };
 
   const staggerChildren = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.2,
-      },
-    },
+    hidden: {},
+    visible: { transition: { staggerChildren: 0.2 } },
   };
 
   const cardVariant = {
@@ -41,24 +63,15 @@ const AboutUs: React.FC = () => {
     visible: { y: 0, opacity: 1, transition: { duration: 0.4 } },
   };
 
-  // Animation for scroll-triggered animations
   const useScrollAnimation = () => {
     const controls = useAnimation();
-    const [ref, inView] = useInView({
-      threshold: 0.2,
-      triggerOnce: true,
-    });
-
+    const [ref, inView] = useInView({ threshold: 0.2, triggerOnce: true });
     useEffect(() => {
-      if (inView) {
-        controls.start("visible");
-      }
+      if (inView) controls.start("visible");
     }, [controls, inView]);
-
     return { ref, controls };
   };
 
-  // Create animation hooks for different sections
   const heroAnimation = useScrollAnimation();
   const aboutAnimation = useScrollAnimation();
   const servicesAnimation = useScrollAnimation();
@@ -67,6 +80,7 @@ const AboutUs: React.FC = () => {
 
   return (
     <div className="flex flex-col min-h-screen">
+      {/* Hero Section */}
       <div className="container mx-auto px-4">
         <motion.div
           className="relative h-64 md:h-96 bg-cover bg-center overflow-hidden rounded-lg shadow-lg"
@@ -76,103 +90,76 @@ const AboutUs: React.FC = () => {
           animate={heroAnimation.controls}
           variants={fadeIn}
         >
-          <div className="absolute inset-0 bg-black opacity-30"></div>
+          <div className="absolute inset-0 bg-gradient-to-r from-black/30 to-black/10"></div>
           <motion.div
-            className="absolute inset-0 flex items-center justify-center"
-            initial={{ scale: 0.8, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.3 }}
+            className="absolute top-6 left-6 bg-black/50 p-4 rounded-lg"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.5, duration: 0.8 }}
           >
-            <h1 className="text-4xl md:text-6xl text-white font-cursive font-bold text-center px-4">
-              Welcome to Goodwood Community Centre
+            <h1 className="text-2xl md:text-4xl font-bold text-white drop-shadow-md">
+              Building Community, Connecting People
             </h1>
-          </motion.div>
-          <motion.div
-            className="absolute bottom-6 left-0 right-0 flex justify-center"
-            initial={{ y: 50, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ delay: 0.8, duration: 0.5 }}
-          >
-            <motion.a
-              href="#join"
-              className="bg-orange-400 hover:bg-orange-500 text-black font-bold py-2 px-6 rounded-md transition duration-300"
-              whileHover={{ scale: 1.1, backgroundColor: "#fb923c" }}
-            >
-              Join Now
-            </motion.a>
           </motion.div>
         </motion.div>
       </div>
 
       {/* About Us Section */}
-      <section className="py-8">
+      <section className="py-16 bg-gradient-to-r from-green-50 to-blue-50">
         <div className="container mx-auto px-4">
-          <motion.div
-            className="bg-orange-200 p-6 rounded-lg mb-8"
+          <motion.h2
+            className="text-3xl font-bold text-gray-800 mb-8 text-center"
             ref={aboutAnimation.ref}
             initial="hidden"
             animate={aboutAnimation.controls}
             variants={slideUp}
           >
-            <h2 className="text-3xl text-center font-semibold mb-4">
-              About us
-            </h2>
-          </motion.div>
-
-          <motion.h2
-            className="text-3xl font-bold mb-4"
-            variants={slideInLeft}
-            initial="hidden"
-            animate={aboutAnimation.controls}
-          >
-            Welcome to Goodwood Community Centre
+            About Goodwood Community Centre
           </motion.h2>
 
-          <div className="space-y-6 max-w-4xl">
+          <div className="space-y-8 max-w-4xl mx-auto">
             <motion.p
-              className="text-lg"
+              className="text-lg text-gray-700 leading-relaxed"
               variants={slideInRight}
               initial="hidden"
               animate={aboutAnimation.controls}
             >
               At the heart of every thriving community is a place where people
               come together to share, support, and grow. Goodwood Community
-              Services is that place—a haven where neighbors become friends,
+              Centre is that place — a hub where neighbors become friends,
               challenges find solutions, and everyone is welcome.
             </motion.p>
 
             <motion.p
-              className="text-lg"
-              variants={slideInRight}
+              className="text-lg text-gray-700 leading-relaxed"
+              variants={slideInLeft}
               initial="hidden"
               animate={aboutAnimation.controls}
               transition={{ delay: 0.2 }}
             >
-              From offering a helping hand in times of need to celebrating
-              life's joyful moments, we are here to make a difference. Whether
-              you're seeking support, looking to learn, or just hoping to
-              connect with others, Goodwood Community Services is your partner
-              in building a stronger, more compassionate community.
+              Whether you're seeking support, looking to learn something new, or
+              simply hoping to connect with others, Goodwood Community Centre is
+              your partner in building a stronger, more compassionate community.
             </motion.p>
           </div>
         </div>
       </section>
 
       {/* What We Offer Section */}
-      <section className="py-8 bg-gray-50">
+      <section className="py-16 bg-gradient-to-br from-indigo-50 via-white to-purple-50">
         <div className="container mx-auto px-4">
           <motion.h2
-            className="text-3xl font-bold mb-6"
+            className="text-3xl font-bold text-gray-800 mb-8 text-center"
             ref={servicesAnimation.ref}
             initial="hidden"
             animate={servicesAnimation.controls}
             variants={slideUp}
           >
-            What we offer
+            What We Offer
           </motion.h2>
 
           <motion.div
-            className="grid md:grid-cols-2 gap-6"
+            className="grid md:grid-cols-2 gap-8"
             variants={staggerChildren}
             initial="hidden"
             animate={servicesAnimation.controls}
@@ -181,232 +168,219 @@ const AboutUs: React.FC = () => {
               {
                 title: "Counseling Services",
                 content:
-                  "We provide professional, compassionate counseling to support mental health and emotional well-being. Whether you're navigating personal challenges, seeking guidance, or simply need someone to talk to, our counselors are here to help.",
+                  "Professional, compassionate counseling to support mental health and emotional wellbeing.",
               },
               {
                 title: "Food Relief Programs",
                 content:
-                  "To ensure no family goes hungry, we offer food relief initiatives that provide nutritious meals and essential groceries to those in need.",
+                  "Ensuring that no family in our community goes hungry with nutritious meals and grocery support.",
               },
               {
                 title: "Playgroup Activities",
                 content:
-                  "Our playgroups create safe, engaging spaces for children to learn, play, and socialize while fostering meaningful connections among parents and caregivers.",
+                  "Safe, engaging spaces for children to learn, play, and build early social skills.",
               },
               {
-                title: "Digital Literacy Programs",
+                title: "Digital Literacy Workshops",
                 content:
-                  "In an increasingly digital world, we help bridge the digital divide by offering workshops and resources to enhance computer skills, internet safety, and online communication.",
+                  "Helping individuals bridge the digital divide with basic computer and internet skills education.",
               },
             ].map((service, index) => (
               <motion.div
                 key={index}
-                className="bg-white p-6 rounded-lg shadow-md"
+                className="bg-white p-6 rounded-lg shadow-lg hover:shadow-2xl transform transition hover:scale-105"
                 variants={cardVariant}
-                whileHover={{
-                  y: -5,
-                  boxShadow:
-                    "0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
-                }}
               >
-                <h3 className="text-xl font-semibold mb-2">{service.title}</h3>
-                <p>{service.content}</p>
+                <h3 className="text-xl font-semibold text-gray-800 mb-2">
+                  {service.title}
+                </h3>
+                <p className="text-gray-600">{service.content}</p>
               </motion.div>
             ))}
           </motion.div>
         </div>
       </section>
 
-      {/* Join Us Section with Animations */}
-      <section id="join" className="py-8">
-        <div className="container mx-auto px-4">
+      {/* Join Us Section */}
+      <section
+        id="join"
+        className="py-20 bg-gradient-to-r from-green-50 to-blue-50"
+      >
+        <div className="container mx-auto px-4 text-center">
           <motion.h2
-            className="text-3xl font-bold text-red-600 mb-4"
+            className="text-3xl font-bold text-gray-800 mb-6"
             ref={joinAnimation.ref}
             initial="hidden"
             animate={joinAnimation.controls}
             variants={slideInLeft}
           >
-            Join Us
+            Join Our Community
           </motion.h2>
 
-          <div className="max-w-4xl mb-6">
-            <motion.p
-              className="text-lg mb-4"
-              variants={slideUp}
-              initial="hidden"
-              animate={joinAnimation.controls}
-            >
-              Goodwood Community Services is more than just a place – it's a
-              community. Whether you're here to access services, attend a
-              program, or simply connect with others, you'll find a welcoming
-              environment where everyone belongs.
-            </motion.p>
+          <motion.p
+            className="text-lg text-gray-700 mb-8"
+            variants={slideUp}
+            initial="hidden"
+            animate={joinAnimation.controls}
+          >
+            Be part of something bigger. Join Goodwood Community Centre and make
+            a difference in your life and the lives of others.
+          </motion.p>
 
-            <motion.p
-              className="text-lg mb-6"
-              variants={slideUp}
-              initial="hidden"
-              animate={joinAnimation.controls}
-              transition={{ delay: 0.2 }}
-            >
-              We look forward to seeing you soon!
-            </motion.p>
-
-            <motion.a
-              href="#"
-              className="bg-orange-400 hover:bg-orange-500 text-black font-bold py-3 px-8 rounded-md inline-block transition duration-300"
-              variants={slideUp}
-              initial="hidden"
-              animate={joinAnimation.controls}
-              transition={{ delay: 0.4 }}
-              whileHover={{
-                scale: 1.05,
-                backgroundColor: "#fb923c",
-                boxShadow:
-                  "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
-              }}
-              whileTap={{ scale: 0.95 }}
-            >
-              JOIN COMMUNITY
-            </motion.a>
-          </div>
+          <motion.a
+            href="/membership"
+            className="inline-block bg-[#00aba9] hover:bg-[#23677c] text-white font-semibold py-3 px-8 rounded-md transition duration-300"
+            whileHover={{
+              scale: 1.05,
+              boxShadow: "0 10px 20px rgba(0, 0, 0, 0.2)",
+            }}
+            whileTap={{ scale: 0.95 }}
+          >
+            Become a Member
+          </motion.a>
         </div>
       </section>
 
-      {/* Partners Section with Animation */}
-      <section className="py-8 bg-green-100">
+      {/* Partners Section */}
+      <section className="py-16 bg-green-100">
         <div className="container mx-auto px-4">
-          <motion.h2
-            className="text-3xl font-bold mb-6"
-            ref={partnersAnimation.ref}
-            initial="hidden"
-            animate={partnersAnimation.controls}
-            variants={slideUp}
-          >
-            Partners
-          </motion.h2>
+          <h2 className="text-3xl font-bold text-gray-800 mb-8 text-center">
+            Our Valued Partners
+          </h2>
 
-          <div className="flex flex-col md:flex-row gap-8">
-            <motion.div
-              className="md:w-1/2"
-              variants={slideInLeft}
-              initial="hidden"
-              animate={partnersAnimation.controls}
-            >
-              <motion.ul
-                className="space-y-6"
-                variants={staggerChildren}
-                initial="hidden"
-                animate={partnersAnimation.controls}
-              >
-                {[
-                  {
-                    name: "ICRC",
-                    desc: "Provides humanitarian aid during conflicts worldwide.",
-                  },
-                  {
-                    name: "Beyond Blue",
-                    desc: "Supports mental health and suicide prevention in Australia.",
-                  },
-                  {
-                    name: "Mission Australia",
-                    desc: "Works to end homelessness and support vulnerable Australians.",
-                  },
-                  {
-                    name: "Relationships Australia",
-                    desc: "Promotes positive and respectful relationships.",
-                  },
-                  {
-                    name: "CMRC",
-                    desc: "Assists migrants and refugees with settlement and integration.",
-                  },
-                  {
-                    name: "Variety",
-                    desc: "Helps children with disabilities or disadvantages thrive.",
-                  },
-                  {
-                    name: "Housing Connect",
-                    desc: "Offers support for secure and affordable housing.",
-                  },
-                ].map((partner, index) => (
-                  <motion.li key={index} variants={cardVariant}>
-                    <h3 className="font-semibold">{partner.name}:</h3>
-                    <p>{partner.desc}</p>
-                  </motion.li>
-                ))}
-              </motion.ul>
-            </motion.div>
-
-            <motion.div
-              className="md:w-1/2 grid grid-cols-2 gap-4"
-              variants={slideInRight}
-              initial="hidden"
-              animate={partnersAnimation.controls}
-            >
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+            {/* Left Side: Partner descriptions */}
+            <div className="space-y-6 ">
               {[
-                "icrc-logo.png",
-                "beyond-blue-logo.png",
-                "mission-australia-logo.png",
-                "relationships-australia-logo.png",
-                "variety-logo.png",
-                "cmrc-logo.png",
-              ].map((logo, index) => (
-                <motion.div
+                {
+                  name: "ICRC",
+                  desc: "Provides humanitarian aid during conflicts worldwide.",
+                  link: "https://www.icrc.org/",
+                },
+                {
+                  name: "Beyond Blue",
+                  desc: "Supports mental health and suicide prevention in Australia.",
+                  link: "https://www.beyondblue.org.au/",
+                },
+                {
+                  name: "Mission Australia",
+                  desc: "Works to end homelessness and support vulnerable Australians.",
+                  link: "https://www.missionaustralia.com.au/",
+                },
+                {
+                  name: "Relationships Australia",
+                  desc: "Promotes positive and respectful relationships.",
+                  link: "https://relationships.org.au/",
+                },
+                {
+                  name: "CMRC",
+                  desc: "Assists migrants and refugees with settlement and integration.",
+                  link: "https://www.cmrc.com.au/",
+                },
+                {
+                  name: "Variety",
+                  desc: "Helps children with disabilities or disadvantages thrive.",
+                  link: "https://www.variety.org.au/",
+                },
+                {
+                  name: "Housing Connect",
+                  desc: "Offers support for secure and affordable housing.",
+                  link: "https://www.homestasmania.com.au",
+                },
+              ].map((partner, index) => (
+                <div key={index}>
+                  <h3 className="text-xl font-semibold text-[#00aba9] mb-1">
+                    {partner.name}
+                  </h3>
+                  <p className="text-gray-700">{partner.desc}</p>
+                </div>
+              ))}
+            </div>
+
+            {/* Right Side: Partner logos */}
+            <div className="bg-white rounded-lg p-6 grid grid-cols-2 gap-4 shadow-lg ">
+              {[
+                {
+                  logo: "icrc-logo.png",
+                  link: "https://www.icrc.org/",
+                },
+                {
+                  logo: "beyond-blue-logo.png",
+                  link: "https://www.beyondblue.org.au/",
+                },
+                {
+                  logo: "mission-australia-logo.png",
+                  link: "https://www.missionaustralia.com.au/",
+                },
+                {
+                  logo: "relationships-australia-logo.png",
+                  link: "https://relationships.org.au/",
+                },
+                {
+                  logo: "variety-logo.png",
+                  link: "https://www.variety.org.au/",
+                },
+                {
+                  logo: "cmrc-logo.png",
+                  link: "https://www.cmrc.com.au/",
+                },
+                {
+                  logo: "housing-connect-logo.png",
+                  link: "https://www.homestasmania.com.au",
+                },
+              ].map((partner, index) => (
+                <a
                   key={index}
-                  className="bg-white p-4 rounded-lg flex items-center justify-center"
-                  whileHover={{
-                    y: -5,
-                    boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1)",
-                  }}
-                  transition={{ type: "spring", stiffness: 300 }}
+                  href={partner.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center p-4 bg-green-50 rounded-md hover:shadow-md transition hover:scale-105 transition-transform
+"
                 >
                   <img
-                    src={`/partners/${logo}`}
+                    src={`/partners/${partner.logo}`}
                     alt={`Partner Logo ${index}`}
-                    className="max-h-16"
+                    className="max-h-16 object-contain"
                   />
-                </motion.div>
+                </a>
               ))}
-              <motion.div
-                className="col-span-2 bg-white p-4 rounded-lg flex items-center justify-center"
-                whileHover={{
-                  y: -5,
-                  boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1)",
-                }}
-                transition={{ type: "spring", stiffness: 300 }}
-              >
-                <img
-                  src="/partners/housing-connect-logo.png"
-                  alt="Housing Connect Logo"
-                  className="max-h-16"
-                />
-              </motion.div>
-            </motion.div>
+            </div>
           </div>
+        </div>
+      </section>
+      {/* Staff Section */}
+      {/* Staff Section */}
+      <section className="py-16 bg-white">
+        <div className="container mx-auto px-4">
+          <h2 className="text-3xl font-bold text-gray-800 mb-10 text-center">
+            Meet Our Staff
+          </h2>
 
-          <motion.div
-            className="mt-8 bg-yellow-200 p-4 rounded-lg text-center"
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={partnersAnimation.controls}
-            variants={{
-              hidden: { opacity: 0, scale: 0.9 },
-              visible: {
-                opacity: 1,
-                scale: 1,
-                transition: {
-                  delay: 0.6,
-                  duration: 0.5,
-                  type: "spring",
-                  stiffness: 200,
-                },
-              },
-            }}
-          >
-            <h3 className="text-xl font-semibold italic">
-              "Working Together to Build a Better Future."
-            </h3>
-          </motion.div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {staffList.map((staff) => (
+              <Link href={`/Admin/staff/${staff._id}`} key={staff._id}>
+                <motion.div
+                  key={staff._id}
+                  className="bg-gray-50 p-6 rounded-lg shadow hover:shadow-lg flex flex-col items-center text-center"
+                  whileHover={{ scale: 1.05 }}
+                  transition={{ type: "spring", stiffness: 200 }}
+                >
+                  <img
+                    src={staff.imageUrl}
+                    alt={staff.name}
+                    className="w-32 h-32 rounded-full object-cover mb-4"
+                  />
+                  <h3 className="text-xl font-semibold text-[#00aba9]">
+                    {staff.name}
+                  </h3>
+                  <p className="text-gray-600">{staff.role}</p>
+                  <blockquote className="italic text-gray-500 mt-2">
+                    "{staff.quote}"
+                  </blockquote>
+                </motion.div>
+              </Link>
+            ))}
+          </div>
         </div>
       </section>
     </div>

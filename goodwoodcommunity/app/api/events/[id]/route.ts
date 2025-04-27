@@ -4,13 +4,14 @@ import connectDB from "@/utils/db";
 import Event from "@/models/Events";
 
 // GET one event by ID
-export async function GET(
-  req: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function GET(req: NextRequest) {
   await connectDB();
+
+  const url = new URL(req.url); // 👈 Create URL object
+  const id = url.pathname.split("/").pop(); // 👈 Get id manually from the URL
+
   try {
-    const event = await Event.findById(params.id).lean();
+    const event = await Event.findById(id).lean();
     if (!event) {
       return NextResponse.json({ error: "Event not found" }, { status: 404 });
     }

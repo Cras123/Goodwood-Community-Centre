@@ -107,7 +107,7 @@ export default function Footer() {
               <Link href="/services/add">Add Service</Link>
             </li>
             <li>
-              <Link href="#">Donate</Link>
+              <Link href="/Admin/staff">Admin</Link>
             </li>
             <li>
               <Link href="#">Volunteer</Link>
