@@ -290,6 +290,42 @@ export const qnaData: QnaItem[] = [
     answer:
       "The provided information doesn't state whether there are fees for general programs. Please contact the centre directly at 03 6272 2560 for information on specific program costs.",
   },
+  {
+    question: "Do you do food relief program?",
+    keywords: ["food relief", "food assistance", "food support", "food program", "hungry", "meals"],
+    answer:
+      "Yes, we offer food relief programs. Our food relief program ensures that no family in our community goes hungry by providing nutritious meals and grocery support. Access to food relief/assistance is also one of the benefits of membership.",
+  },
+  {
+    question: "What's the contact number?",
+    keywords: ["contact number", "phone number", "telephone", "call you"],
+    answer:
+      "Our contact number is 03 6272 2560. You can call us during our opening hours, Monday to Friday from 9 am to 4 pm.",
+  },
+  {
+    question: "What types of events and services do you offer?",
+    keywords: ["types of events", "types of services", "what events", "what services", "list of services"],
+    answer:
+      "We offer a variety of events and services including Community Support, Educational Programs, Cultural Events, Health & Wellness, Legal Assistance, Youth Development, Senior Citizen Programs, Sports & Recreation, Food Relief Programs, Playgroup Activities, Digital Literacy Workshops, and more. We also have specific programs like Community Garden, Low Impact Exercise, Walking Groups, Learn to Drive Program, NILS Appointments, and 'Eating With Friends'.",
+  },
+  {
+    question: "What is the membership fee?",
+    keywords: ["membership fee", "join fee", "cost to join", "membership price"],
+    answer:
+      "For specific membership fee information, please contact the centre directly at 03 6272 2560 or email manager@goodwoodcommunitycentre.org.au. Membership benefits include access to food relief/assistance, free entry to Glenorchy Seniors Club, and various free sessions like Scrabble, Craft, Playgroup, and Card games.",
+  },
+  {
+    question: "Do you have a hall hire program?",
+    keywords: ["hall hire", "rent hall", "venue hire", "book hall", "facility rental"],
+    answer:
+      "Yes, we have a hall hire program. Our Main Community Hall is available for hire. You can book it for events, meetings, and other activities. For more information, visit our hall hire page or contact us directly.",
+  },
+  {
+    question: "What are the hall hire rates and terms and conditions?",
+    keywords: ["hall hire rates", "hall cost", "venue price", "hall terms", "hall conditions", "hall rules"],
+    answer:
+      "Our Main Community Hall rates are $80 for up to 4 hours (e.g., for Children's Parties, Baby Showers) and $200 for a day rate. A bond of $150 (for up to 4 hours) or $500 (for day rate) is required. Commercial rates differ. Hire fees must be paid in cash only. The bond is refundable subject to conditions. Key conditions include: maximum capacity of 80 persons, no alcohol consumption on site, no music after 11:00 PM, and the hall must be vacated by midnight. For full terms and conditions, please contact us or refer to our Hall Hire contract.",
+  }
   // Add more Q&A pairs based on the initial text if needed
 ];
 
