@@ -20,7 +20,7 @@ export const heroSlides = [
   {
     id: 1,
     bgImg: "/goodwood_photos/hero1.png",
-    title: "We are here to grow learn and travel",
+    title: "Welcome to Goodwood Community Centre of Tasmania",
     brief: ``,
   },
   {
@@ -42,7 +42,7 @@ export const heroSlides = [
   {
     id: 4,
     bgImg: "/goodwood_photos/hero4.png",
-    title: "",
+    title: "Thanks to all the members and staff ",
     brief: ``,
   },
 ];
@@ -59,18 +59,21 @@ export const contact = [
     },
   },
 ];
-export const OverviewCard = [
+export const Overviewcard = [
   {
-    title: "Events / Programs",
+    title: "Events",
     imageSrc: "/img/events.jpg",
+    link: "/events", // 👈 Add link
   },
   {
     title: "Hall Hire",
     imageSrc: "/img/hallhire.jpg",
+    link: "/hall-hire", // 👈 Add link
   },
   {
     title: "Services",
     imageSrc: "/img/services.jpg",
+    link: "/services", // 👈 Add link
   },
 ];
 

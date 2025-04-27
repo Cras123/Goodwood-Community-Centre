@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import OverviewCard from "@/components/OverviewCard";
-
+import Link from "next/link";
 interface Event {
   _id: string;
   title: string;
@@ -86,11 +86,13 @@ const UpcomingEvents = () => {
             className="flex justify-center gap-6"
           >
             {displayedEvents.map((event) => (
-              <OverviewCard
+              <Link
+                href={`/events/${event._id}`}
                 key={event._id}
-                title={event.title}
-                imageSrc={event.imageUrl}
-              />
+                className="w-full md:w-1/4"
+              >
+                <OverviewCard title={event.title} imageSrc={event.imageUrl} />
+              </Link>
             ))}
           </motion.div>
         </AnimatePresence>

@@ -12,19 +12,19 @@ import {
 
 export default function Footer() {
   return (
-    <footer className="bg-black text-white pt-12 pb-6 px-6">
-      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-8">
+    <footer className="bg-black text-white pt-12 pb-6 px-20">
+      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-30">
         {/* Logo and Contact */}
         <div className="space-y-4">
           <div className="flex items-center gap-3">
             <Image
-              src="/img/goodwood-logo.png"
+              src="/goodwood_photos/logo.png"
               alt="Goodwood Community Centre Logo"
-              width={50}
-              height={50}
+              width={100}
+              height={100}
               className="object-contain"
             />
-            <span className="text-lg md:text-xl font-semibold leading-tight">
+            <span className="text-lg md:text-xl font leading-tight">
               Goodwood Community <br /> Centre
             </span>
           </div>
@@ -57,7 +57,7 @@ export default function Footer() {
 
         {/* About Links */}
         <div>
-          <h3 className="text-base font-semibold mb-4">ABOUT</h3>
+          <h3 className="text-base font-semibold mb-4 ">ABOUT</h3>
           <ul className="space-y-2 text-sm">
             <li>
               <Link href="#">Home</Link>

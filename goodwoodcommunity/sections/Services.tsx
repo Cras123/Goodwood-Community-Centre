@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import OverviewCard from "@/components/OverviewCard";
-
+import Link from "next/link";
 interface Service {
   _id: string;
   title: string;
@@ -84,11 +84,16 @@ const Services = () => {
             className="flex justify-center gap-6"
           >
             {displayedServices.map((service) => (
-              <OverviewCard
+              <Link
+                href={`/services/${service._id}`}
                 key={service._id}
-                title={service.title}
-                imageSrc={service.imageUrl}
-              />
+                className="w-full md:w-1/4"
+              >
+                <OverviewCard
+                  title={service.title}
+                  imageSrc={service.imageUrl}
+                />
+              </Link>
             ))}
           </motion.div>
         </AnimatePresence>
