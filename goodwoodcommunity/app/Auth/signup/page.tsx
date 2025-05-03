@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import Link from "next/link";
+import Header from "../../../components/Header";
 
 const SignUpPage = () => {
   const [email, setEmail] = useState("");
@@ -21,6 +22,8 @@ const SignUpPage = () => {
 
   return (
     <div className="min-h-screen bg-slate-50">
+      <Header />
+
       <main className="pt-24 flex items-center justify-center min-h-screen">
         <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-md border-t-4 border-[#00855e]">
           <div className="text-center mb-6">
@@ -66,7 +69,7 @@ const SignUpPage = () => {
               <input
                 id="password"
                 type="password"
-                placeholder="****"
+                placeholder=""
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="w-full px-3 py-2 border border-slate-300 rounded focus:outline-none focus:ring-2 focus:ring-[#00855e]"
@@ -84,7 +87,7 @@ const SignUpPage = () => {
               <input
                 id="confirmPassword"
                 type="password"
-                placeholder="****"
+                placeholder=""
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 className="w-full px-3 py-2 border border-slate-300 rounded focus:outline-none focus:ring-2 focus:ring-[#00855e]"

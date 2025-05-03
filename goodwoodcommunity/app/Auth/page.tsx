@@ -27,12 +27,12 @@ const AuthPage = () => {
           </div>
 
           <div className="flex mb-6">
-            <Link href="/login" className="flex-1">
+            <Link href="/Auth" className="flex-1">
               <button className="w-full bg-[#e9f0ff] text-[#00855e] font-semibold py-2 px-4 rounded-l-md">
                 Login
               </button>
             </Link>
-            <Link href="/signup" className="flex-1">
+            <Link href="/Auth/signup" className="flex-1">
               <button className="w-full bg-[#00855e] hover:bg-[#00724f] text-white py-2 px-4 rounded-r-md font-medium transition-all duration-300">
                 Sign Up
               </button>
@@ -62,7 +62,7 @@ const AuthPage = () => {
               <input
                 id="password"
                 type="password"
-                placeholder="****"
+                placeholder=""
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="w-full px-3 py-2 border border-slate-300 rounded focus:outline-none focus:ring-2 focus:ring-[#00855e]"
@@ -79,7 +79,7 @@ const AuthPage = () => {
           </form>
 
           <div className="text-center mt-4">
-            <Link href="/forgot-password">
+            <Link href="/Auth/forget-password">
               <span className="text-[#00855e] hover:text-[#00724f] cursor-pointer transition-colors duration-300">
                 Forgot your password?{" "}
                 <span className="font-medium">Reset here</span>
