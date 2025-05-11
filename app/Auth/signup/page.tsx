@@ -2,13 +2,17 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import Header from "../../../components/Header";
+import { useRouter } from "next/navigation";
 
 const SignUpPage = () => {
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const router = useRouter();
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (password !== confirmPassword) {
@@ -16,8 +20,20 @@ const SignUpPage = () => {
       return;
     }
 
-    console.log("Sign up attempt with:", email, password);
-    // Add your sign up logic here
+    const res = await fetch("/api/auth/register", {
+      method: "POST",
+      body: JSON.stringify({ name, email, password }),
+      headers: { "Content-Type": "application/json" },
+    });
+
+    const data = await res.json();
+
+    if (res.ok) {
+      alert("Signup successful!");
+      router.push("/Auth"); // redirect to login page
+    } else {
+      alert(data.error || "Signup failed");
+    }
   };
 
   return (
@@ -48,6 +64,21 @@ const SignUpPage = () => {
 
           <form onSubmit={handleSubmit}>
             <div className="mb-4">
+              <label htmlFor="name" className="block text-slate-700 mb-2">
+                Name
+              </label>
+              <input
+                id="name"
+                type="text"
+                placeholder="John Doe"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                className="w-full px-3 py-2 border border-slate-300 rounded focus:outline-none focus:ring-2 focus:ring-[#00855e]"
+                required
+              />
+            </div>
+
+            <div className="mb-4">
               <label htmlFor="email" className="block text-slate-700 mb-2">
                 Email
               </label>
@@ -69,7 +100,6 @@ const SignUpPage = () => {
               <input
                 id="password"
                 type="password"
-                placeholder=""
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="w-full px-3 py-2 border border-slate-300 rounded focus:outline-none focus:ring-2 focus:ring-[#00855e]"
@@ -87,7 +117,6 @@ const SignUpPage = () => {
               <input
                 id="confirmPassword"
                 type="password"
-                placeholder=""
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 className="w-full px-3 py-2 border border-slate-300 rounded focus:outline-none focus:ring-2 focus:ring-[#00855e]"

@@ -1,16 +1,37 @@
 "use client";
+
 import React, { useState } from "react";
 import Link from "next/link";
+import { signIn } from "next-auth/react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Header from "../../components/Header";
 
 const AuthPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const error = searchParams.get("error");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Login attempt with:", email, password);
-    // Add your authentication logic here
+    setLoading(true);
+
+    const res = await signIn("credentials", {
+      redirect: false,
+      email,
+      password,
+      callbackUrl: "/dashboard", // or your desired page
+    });
+
+    setLoading(false);
+
+    if (res?.error) {
+      alert("Login failed: Invalid email or password.");
+    } else if (res?.url) {
+      router.push(res.url);
+    }
   };
 
   return (
@@ -32,12 +53,13 @@ const AuthPage = () => {
                 Login
               </button>
             </Link>
-            <Link href="/Auth/signup" className="flex-1">
-              <button className="w-full bg-[#00855e] hover:bg-[#00724f] text-white py-2 px-4 rounded-r-md font-medium transition-all duration-300">
-                Sign Up
-              </button>
-            </Link>
           </div>
+
+          {error && (
+            <div className="mb-4 text-red-500 text-center font-medium">
+              Invalid login credentials.
+            </div>
+          )}
 
           <form onSubmit={handleSubmit}>
             <div className="mb-4">
@@ -62,7 +84,7 @@ const AuthPage = () => {
               <input
                 id="password"
                 type="password"
-                placeholder=""
+                placeholder="••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="w-full px-3 py-2 border border-slate-300 rounded focus:outline-none focus:ring-2 focus:ring-[#00855e]"
@@ -72,9 +94,12 @@ const AuthPage = () => {
 
             <button
               type="submit"
-              className="w-full bg-[#00855e] hover:bg-[#00724f] text-white py-3 px-4 rounded font-medium shadow-md transition-all duration-300 transform hover:scale-105 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-[#00855e]"
+              disabled={loading}
+              className={`w-full ${
+                loading ? "bg-gray-400" : "bg-[#00855e] hover:bg-[#00724f]"
+              } text-white py-3 px-4 rounded font-medium shadow-md transition-all duration-300 transform hover:scale-105 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-[#00855e]`}
             >
-              Login
+              {loading ? "Logging in..." : "Login"}
             </button>
           </form>
 

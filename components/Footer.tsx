@@ -112,6 +112,10 @@ export default function Footer() {
             <li>
               <Link href="#">Volunteer</Link>
             </li>
+
+            <li>
+              <Link href="/Auth">Admin Portal</Link>
+            </li>
           </ul>
         </div>
       </div>

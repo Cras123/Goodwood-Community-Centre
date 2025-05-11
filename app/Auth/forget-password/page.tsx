@@ -7,18 +7,34 @@ const ForgotPasswordPage = () => {
   const [email, setEmail] = useState("");
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [testToken, setTestToken] = useState(""); // Optional: for testing without email
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+    setError("");
 
-    // Simulate API call
-    setTimeout(() => {
-      console.log("Password reset requested for:", email);
+    try {
+      const res = await fetch("/api/auth/forgot-password", {
+        method: "POST",
+        body: JSON.stringify({ email }),
+        headers: { "Content-Type": "application/json" },
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setError(data.error || "Something went wrong.");
+      } else {
+        setIsSubmitted(true);
+        setTestToken(data.token); // For testing without email delivery
+      }
+    } catch (err) {
+      setError("Server error. Please try again.");
+    } finally {
       setIsLoading(false);
-      setIsSubmitted(true);
-      // Add your actual password reset request logic here
-    }, 1500);
+    }
   };
 
   return (
@@ -39,7 +55,7 @@ const ForgotPasswordPage = () => {
               <div className="mb-6">
                 <p className="text-slate-600 mb-4">
                   Enter the email address associated with your account, and
-                  we'll send you a link to reset your password.
+                  we&apos;ll send you a link to reset your password.
                 </p>
                 <label htmlFor="email" className="block text-slate-700 mb-2">
                   Email
@@ -55,6 +71,10 @@ const ForgotPasswordPage = () => {
                   disabled={isLoading}
                 />
               </div>
+
+              {error && (
+                <div className="text-red-500 text-sm mb-4">{error}</div>
+              )}
 
               <button
                 type="submit"
@@ -86,13 +106,30 @@ const ForgotPasswordPage = () => {
               </div>
               <h2 className="text-xl font-bold mb-2">Check your email</h2>
               <p className="text-slate-600 mb-4">
-                We've sent a password reset link to{" "}
+                We&apos;ve sent a password reset link to{" "}
                 <span className="font-medium text-slate-700">{email}</span>
               </p>
               <p className="text-slate-500 text-sm mb-6">
-                If you don't see the email, check your spam folder or request
-                another link.
+                If you don&apos;t see the email, check your spam folder or
+                request another link.
               </p>
+
+              {testToken && (
+                <div className="mt-4 text-left">
+                  <p className="text-sm text-gray-500">
+                    For testing (copy this token):
+                  </p>
+                  <pre className="bg-gray-100 p-2 mt-1 rounded text-xs break-all">
+                    {testToken}
+                  </pre>
+                  <p className="text-sm mt-2">
+                    Use it at:{" "}
+                    <code className="font-mono">
+                      /auth/reset-password?token=...
+                    </code>
+                  </p>
+                </div>
+              )}
             </div>
           )}
 

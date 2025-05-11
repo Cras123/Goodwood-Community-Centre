@@ -1,3 +1,6 @@
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+
 import { notFound } from "next/navigation";
 import connectDB from "@/utils/db";
 import Event from "@/models/Events";
@@ -25,7 +28,7 @@ interface EventType {
 
 export default async function EventDetail({ params }: Params) {
   await connectDB();
-
+  const session = await getServerSession(authOptions);
   const rawEvent = await Event.findById(params.id).lean<EventType>();
 
   if (!rawEvent) return notFound();
@@ -88,16 +91,18 @@ export default async function EventDetail({ params }: Params) {
       </div>
 
       {/* Actions: Participate + Edit + Delete */}
-      <div className="flex gap-4 justify-center mt-8">
-        <Link
-          href={`/events/edit/${event._id}`}
-          className="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded"
-        >
-          Edit
-        </Link>
+      {session && (
+        <div className="flex gap-4 justify-center mt-8">
+          <Link
+            href={`/events/edit/${event._id}`}
+            className="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded"
+          >
+            Edit
+          </Link>
 
-        <DeleteButton id={event._id} type="events" />
-      </div>
+          <DeleteButton id={event._id} type="events" />
+        </div>
+      )}
     </div>
   );
 }

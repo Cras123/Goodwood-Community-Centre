@@ -4,6 +4,7 @@ import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Chatbot from "@/components/Chatbot";
+import Providers from "./providers"; // ✅ this is your wrapper
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,10 +31,12 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen pt-[70px] md:pt-[120px] px-4 sm:px-6 lg:px-8 bg-gray-100`}
       >
-        <Header />
-        {children}
-        <Chatbot />
-        <Footer />
+        <Providers>
+          <Header />
+          {children}
+          <Chatbot />
+          <Footer />
+        </Providers>
       </body>
     </html>
   );

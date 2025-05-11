@@ -3,8 +3,11 @@ import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import Search from "./Search";
+import LogoutButton from "./LogoutButton";
+import { useSession } from "next-auth/react";
 
 const Header = () => {
+  const { data: session, status } = useSession();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [openDropdownIndex, setOpenDropdownIndex] = useState<number | null>(
     null
@@ -127,7 +130,7 @@ const Header = () => {
 "
                     >
                       <Link href="/services" className="flex items-center">
-                        Booking Services
+                        Services
                       </Link>
                     </li>
                     <li
@@ -136,7 +139,7 @@ const Header = () => {
 "
                     >
                       <Link href="/events" className="flex items-center">
-                        Booking Events
+                        Events
                       </Link>
                     </li>
                   </React.Fragment>
@@ -153,18 +156,7 @@ const Header = () => {
                   </li>
                 )
               )}
-              <li className="mt-4">
-                {/* Right Section: Search and Login */}
-                <div className="flex space-x-4">
-                  <div>
-                    <Link href="/Auth">
-                      <button className="bg-[#00aba9] hover:bg-[#23677c] text-white px-8 py-2 rounded-md">
-                        Login
-                      </button>
-                    </Link>
-                  </div>
-                </div>
-              </li>
+              {status === "authenticated" && <LogoutButton />}
             </ul>
           </div>
 
@@ -214,7 +206,7 @@ const Header = () => {
                               href="/services"
                               className="block px-4 py-2 hover:bg-gray-100"
                             >
-                              Services Booking
+                              Booking
                             </Link>
                           </li>
                           <li>
@@ -222,7 +214,7 @@ const Header = () => {
                               href="/events"
                               className="block px-4 py-2 hover:bg-gray-100"
                             >
-                              Event Booking
+                              Booking
                             </Link>
                           </li>
                         </ul>
@@ -249,12 +241,7 @@ const Header = () => {
               <div className="mr-4">
                 <Search />
               </div>
-
-              <Link href="/Auth">
-                <button className="bg-[#00aba9] hover:bg-[#23677c] text-white px-8 py-2 rounded-md shadow-md transition-all duration-300 transform hover:scale-105 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-green-500">
-                  Login
-                </button>
-              </Link>
+              {status === "authenticated" && <LogoutButton />}
             </div>
           </div>
         </div>
