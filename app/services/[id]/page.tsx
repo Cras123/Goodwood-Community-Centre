@@ -5,7 +5,8 @@ import Image from "next/image";
 import Link from "next/link";
 import DeleteButton from "@/components/DeleteButton";
 import { notFound } from "next/navigation";
-
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 interface ParamsProps {
   params: {
     id: string;
@@ -20,6 +21,8 @@ async function getService(id: string) {
 
 export default async function ServiceDetailPage({ params }: ParamsProps) {
   const service = await getService(params.id);
+  const session = await getServerSession(authOptions);
+
   if (!service) notFound();
 
   return (
@@ -65,16 +68,18 @@ export default async function ServiceDetailPage({ params }: ParamsProps) {
         </Link>
       </div>
 
-      {/* Edit & Delete Controls */}
-      <div className="flex gap-4 mt-10">
-        <Link
-          href={`/services/edit/${params.id}`}
-          className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded"
-        >
-          Edit
-        </Link>
-        <DeleteButton id={params.id} type="services" />
-      </div>
+      {/* Show only if authenticated */}
+      {session && (
+        <div className="flex gap-4 mt-10">
+          <Link
+            href={`/services/edit/${params.id}`}
+            className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded"
+          >
+            Edit
+          </Link>
+          <DeleteButton id={params.id} type="services" />
+        </div>
+      )}
     </div>
   );
 }

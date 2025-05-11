@@ -206,7 +206,7 @@ const Header = () => {
                               href="/services"
                               className="block px-4 py-2 hover:bg-gray-100"
                             >
-                              Booking
+                              Services
                             </Link>
                           </li>
                           <li>
@@ -214,7 +214,7 @@ const Header = () => {
                               href="/events"
                               className="block px-4 py-2 hover:bg-gray-100"
                             >
-                              Booking
+                              Event
                             </Link>
                           </li>
                         </ul>
