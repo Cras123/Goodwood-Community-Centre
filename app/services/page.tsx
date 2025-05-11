@@ -1,9 +1,9 @@
-// app/services/page.tsx
 "use client";
 
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { motion } from "framer-motion";
 
 interface Service {
   _id: string;
@@ -25,48 +25,74 @@ const ServicesPage = () => {
   }, []);
 
   return (
-    <div className="px-6 py-10">
-      <div className="text-center mb-10">
-        <h1 className="text-5xl font-bold tracking-wider">OUR SERVICES</h1>
-        <p className="mt-4 text-lg max-w-2xl mx-auto">
-          Goodwood Community offers venue hire, engaging programs, support
-          services, exciting events, and relaxing social spaces for everyone to
-          enjoy.
-        </p>
+    <motion.div
+      className="flex flex-col space-y-16 py-8"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 1 }}
+    >
+      {/* 🔷 Hero Section with Background Image */}
+      <div className="relative h-[400px] w-full overflow-hidden">
+        <Image
+          src="/img/services.jpg"
+          alt="Our Services"
+          layout="fill"
+          objectFit="cover"
+          className="brightness-75"
+        />
+        <div className="absolute inset-0 flex flex-col items-center justify-center text-white text-center px-4">
+          <h1 className="text-4xl md:text-6xl font-bold mb-6">Our Services</h1>
+        </div>
       </div>
 
-      <h2 className="text-3xl font-bold mb-6">Services</h2>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-        {services.map((service) => (
-          <div
-            key={service._id}
-            className="text-center bg-white rounded-lg shadow hover:shadow-xl transition-shadow"
-          >
-            <div className="relative">
-              <Link href={`/services/${service._id}`}>
+      {/* 🟦 Service Cards */}
+      <div className="px-6 container mx-auto">
+        <div className="text-center mb-10">
+          <h2 className="text-4xl font-bold">Explore What We Offer</h2>
+          <p className="text-gray-600 mt-4 max-w-2xl mx-auto">
+            Goodwood Community Centre provides diverse services — from venue
+            hire and workshops to social events and support programs.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+          {services.map((service) => (
+            <motion.div
+              key={service._id}
+              whileHover={{ scale: 1.03 }}
+              className="bg-white rounded-lg shadow-md overflow-hidden transition"
+            >
+              <div className="relative w-full h-52">
                 {service.imageUrl ? (
                   <Image
                     src={service.imageUrl}
                     alt={service.title}
-                    width={400}
-                    height={300}
-                    className="mx-auto object-cover rounded-t-lg"
+                    layout="fill"
+                    objectFit="cover"
                   />
                 ) : (
-                  <div className="w-full h-[300px] bg-gray-100 flex items-center justify-center text-gray-500">
-                    No image available
+                  <div className="w-full h-full bg-gray-200 flex items-center justify-center text-gray-500">
+                    No Image
                   </div>
                 )}
-              </Link>
-              <div className="absolute bottom-2 right-2 bg-pink-200 text-black text-sm font-semibold px-3 py-1 rounded shadow">
-                {service.category}
               </div>
-            </div>
-            <p className="mt-4 font-semibold text-lg">{service.title}</p>
-          </div>
-        ))}
+              <div className="p-5">
+                <h3 className="text-xl font-bold mb-2">{service.title}</h3>
+                <span className="inline-block bg-blue-100 text-blue-800 text-xs px-3 py-1 rounded-full font-medium">
+                  {service.category}
+                </span>
+                <Link
+                  href={`/services/${service._id}`}
+                  className="block mt-4 text-blue-600 font-semibold hover:underline"
+                >
+                  Learn More →
+                </Link>
+              </div>
+            </motion.div>
+          ))}
+        </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

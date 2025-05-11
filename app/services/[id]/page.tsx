@@ -1,50 +1,79 @@
-// app/services/[id]/page.tsx
-import { notFound } from "next/navigation";
+import React from "react";
 import connectDB from "@/utils/db";
 import Service from "@/models/Services";
-import DeleteButton from "@/components/DeleteButton";
+import Image from "next/image";
 import Link from "next/link";
+import DeleteButton from "@/components/DeleteButton";
+import { notFound } from "next/navigation";
 
-interface Params {
-  params: { id: string };
+interface ParamsProps {
+  params: {
+    id: string;
+  };
 }
 
-interface ServiceType {
-  _id: string;
-  name: string;
-  description: string;
-  category: string;
-  imageUrl: string;
-}
-
-export default async function ServiceDetail({ params }: Params) {
+async function getService(id: string) {
   await connectDB();
+  const service = await Service.findById(id).lean();
+  return JSON.parse(JSON.stringify(service));
+}
 
-  const { id } = await Promise.resolve(params);
-  if (!id) return notFound();
-
-  const service = (await Service.findById(id).lean()) as unknown as ServiceType;
-  if (!service || !("name" in service)) return notFound();
+export default async function ServiceDetailPage({ params }: ParamsProps) {
+  const service = await getService(params.id);
+  if (!service) notFound();
 
   return (
-    <div className="max-w-3xl mx-auto p-6 bg-white shadow rounded">
-      <img src={service.imageUrl} alt={service.name} className="rounded mb-4" />
-      <h1 className="text-3xl font-bold mb-2">{service.name}</h1>
-      <p className="text-gray-600 mb-2">{service.description}</p>
+    <div className="px-6 py-10 flex flex-col items-center">
+      <div className="max-w-6xl w-full flex flex-col md:flex-row items-start gap-10">
+        {/* Left Section: Text Box */}
+        <div className="flex-1 bg-gray-400 text-black p-6 rounded-2xl space-y-4 shadow-lg">
+          <h1 className="text-3xl font-bold text-center">{service.title}</h1>
+          <p className="text-md leading-relaxed font-mono">
+            {service.description ||
+              "No description available for this service."}
+          </p>
+          <p className="font-semibold mt-2">Cost: {service.category}</p>
+          <p className="font-medium">
+            Address: Goodwood Community Hall, Adelaide, SA
+          </p>
+        </div>
 
-      <p className="mb-4">
-        <strong>Price:</strong> {service.category}
-      </p>
+        {/* Right Section: Image */}
+        <div className="flex-1 relative w-full h-72 md:h-96">
+          {service.imageUrl ? (
+            <Image
+              src={service.imageUrl}
+              alt={service.title}
+              fill
+              className="object-cover rounded-xl"
+            />
+          ) : (
+            <div className="w-full h-full bg-gray-200 flex items-center justify-center rounded-xl">
+              No Image
+            </div>
+          )}
+        </div>
+      </div>
 
-      <div className="flex gap-4">
+      {/* Contact Us Button */}
+      <div className="mt-10">
         <Link
-          href={`/services/edit/${service._id}`}
-          className="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded"
+          href="/Contactus"
+          className="bg-yellow-400 hover:bg-yellow-500 text-black font-semibold px-6 py-3 rounded-full shadow-md"
+        >
+          Contact us to book now
+        </Link>
+      </div>
+
+      {/* Edit & Delete Controls */}
+      <div className="flex gap-4 mt-10">
+        <Link
+          href={`/services/edit/${params.id}`}
+          className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded"
         >
           Edit
         </Link>
-
-        <DeleteButton id={service._id.toString()} type="services" />
+        <DeleteButton id={params.id} type="services" />
       </div>
     </div>
   );

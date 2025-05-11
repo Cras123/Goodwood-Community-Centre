@@ -86,7 +86,7 @@ const MembershipPage: React.FC = () => {
   return (
     <main className="min-h-screen">
       {/* Hero section with background image - LIGHTER VERSION */}
-      <section className="relative h-[80vh] flex items-center">
+      <section className="relative h-[80vh] flex items-center overflow-hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="absolute inset-0 z-0">
           <Image
             src="/img/events.jpg"

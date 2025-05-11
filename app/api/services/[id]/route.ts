@@ -12,22 +12,43 @@ export async function GET(
 }
 
 export async function PUT(
-  req: NextRequest,
+  req: Request,
   { params }: { params: { id: string } }
 ) {
-  await connectDB();
-  const body = await req.json();
-  const updated = await Service.findByIdAndUpdate(params.id, body, {
-    new: true,
-  });
-  return NextResponse.json(updated);
+  try {
+    await connectDB();
+    const body = await req.json();
+    const updatedService = await Service.findByIdAndUpdate(params.id, body, {
+      new: true,
+    });
+
+    return NextResponse.json(updatedService);
+  } catch (error) {
+    console.error("Error updating service:", error);
+    return NextResponse.json(
+      { message: "Failed to update service" },
+      { status: 500 }
+    );
+  }
 }
 
 export async function DELETE(
-  req: NextRequest,
+  req: Request,
   { params }: { params: { id: string } }
 ) {
-  await connectDB();
-  await Service.findByIdAndDelete(params.id);
-  return NextResponse.json({ success: true });
+  try {
+    await connectDB();
+    await Service.findByIdAndDelete(params.id);
+
+    return NextResponse.json(
+      { message: "Service deleted successfully" },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error("Error deleting service:", error);
+    return NextResponse.json(
+      { message: "Failed to delete service" },
+      { status: 500 }
+    );
+  }
 }

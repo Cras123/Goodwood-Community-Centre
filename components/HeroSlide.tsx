@@ -1,5 +1,11 @@
 import React from "react";
 import Image from "next/image";
+import { Poppins } from "next/font/google";
+
+const poppins = Poppins({
+  subsets: ["latin"],
+  weight: ["400", "600", "700"], // you can pick which weights you want
+});
 
 interface SlideProps {
   slide: {
@@ -12,48 +18,48 @@ interface SlideProps {
 }
 
 const HeroSlide: React.FC<SlideProps> = ({ slide, index }) => {
-  const isSplitLayout = index === 5 || index === 6;
+  const isSplitLayout = index === 0 || index === 3;
 
   if (isSplitLayout) {
     return (
-      <div className="relative flex flex-col-reverse lg:flex-row min-h-[400px] md:min-h-[500px] lg:min-h-[600px] w-full text-white overflow-hidden">
-        {/* Left: Text (1/4 width) */}
-        <div className="relative z-20 w-full lg:w-1/4 flex flex-col justify-center px-6 py-8 bg-gradient-to-r from-black via-black/60 to-transparent">
-          <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-2">
+      <div className="relative w-full min-h-[450px] text-white overflow-hidden">
+        {/* Background Image */}
+        <Image
+          src={slide.bgImg}
+          alt={slide.title}
+          fill
+          className="object-cover"
+          priority
+        />
+
+        {/* Bottom Text Overlay */}
+        <div className="absolute bottom-0 left-0 w-full bg-black/60 p-6 text-center z-20">
+          <h2
+            className={`${poppins.className} text-2xl md:text-3xl lg:text-4xl font-bold`}
+          >
             {slide.title}
           </h2>
-          <p className="text-sm md:text-base lg:text-lg">{slide.brief}</p>
-        </div>
-
-        {/* Right: Image (3/4 width) */}
-        <div className="relative w-full lg:w-3/4 h-full">
-          <Image
-            src={slide.bgImg}
-            alt={slide.title}
-            fill
-            className="object-contain "
-            priority
-          />
+          <p className="text-sm md:text-base mt-2">{slide.brief}</p>
         </div>
       </div>
     );
   }
 
-  // All other slides: full bg with overlay
+  // ✅ Full background layout with ONLY IMAGE (no text)
   return (
-    <a
-      href="#"
-      className="relative flex items-center h-96 w-full text-white overflow-hidden"
-      style={{
-        backgroundImage: `url(${slide.bgImg || "fallback-image.jpg"})`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-      }}
-      aria-label={`View details of ${slide.title}`}
-    >
-      <div className="absolute inset-0 bg-gradient-to-r  z-10"></div>
-      <div className="relative z-20 px-6 py-8 lg:w-1/2"></div>
-    </a>
+    <div className="relative w-full min-h-[400px] overflow-hidden">
+      {/* Background Image */}
+      <Image
+        src={slide.bgImg}
+        alt={slide.title}
+        fill
+        className="object-cover"
+        priority
+      />
+
+      {/* Optional soft dark overlay (if you want slight dark effect, can remove if you don't want) */}
+      <div className="absolute inset-0 bg-black/20 z-10"></div>
+    </div>
   );
 };
 

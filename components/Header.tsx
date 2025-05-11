@@ -157,9 +157,11 @@ const Header = () => {
                 {/* Right Section: Search and Login */}
                 <div className="flex space-x-4">
                   <div>
-                    <button className="bg-[#00aba9] hover:bg-[#23677c] text-white px-8 py-2 rounded-md">
-                      Login
-                    </button>
+                    <Link href="/Auth">
+                      <button className="bg-[#00aba9] hover:bg-[#23677c] text-white px-8 py-2 rounded-md">
+                        Login
+                      </button>
+                    </Link>
                   </div>
                 </div>
               </li>
@@ -247,9 +249,12 @@ const Header = () => {
               <div className="mr-4">
                 <Search />
               </div>
-              <button className="bg-[#00aba9] hover:bg-[#23677c] text-white px-8 py-2 rounded-md shadow-md transition-all duration-300 transform hover:scale-105 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-green-500">
-                Login
-              </button>
+
+              <Link href="/Auth">
+                <button className="bg-[#00aba9] hover:bg-[#23677c] text-white px-8 py-2 rounded-md shadow-md transition-all duration-300 transform hover:scale-105 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+                  Login
+                </button>
+              </Link>
             </div>
           </div>
         </div>

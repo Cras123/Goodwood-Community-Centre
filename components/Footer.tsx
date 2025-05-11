@@ -2,58 +2,124 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { FaInstagram, FaFacebook } from "react-icons/fa";
+import {
+  FaFacebook,
+  FaMapMarkerAlt,
+  FaEnvelope,
+  FaPhone,
+  FaClock,
+} from "react-icons/fa";
 
 export default function Footer() {
   return (
-    <footer className="bg-gray-900 text-white py-2 px-6">
-      <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
-        {/* Logo */}
-        <div className="flex items-center gap-3">
-          <Image
-            src="/img/logo.png"
-            alt="Good Wood Community Centre Logo"
-            width={25}
-            height={25}
-          />
+    <footer className="bg-black text-white pt-12 pb-6 px-20">
+      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-30">
+        {/* Logo and Contact */}
+        <div className="space-y-4">
+          <div className="flex items-center gap-3">
+            <Image
+              src="/goodwood_photos/logo.png"
+              alt="Goodwood Community Centre Logo"
+              width={100}
+              height={100}
+              className="object-contain"
+            />
+            <span className="text-lg md:text-xl font leading-tight">
+              Goodwood Community <br /> Centre
+            </span>
+          </div>
+
+          <div className="text-sm leading-relaxed space-y-2 mt-4">
+            <div className="flex items-center gap-2">
+              <FaMapMarkerAlt size={16} />
+              <span>20 Acton Crescent, Goodwood TAS 7010</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <FaEnvelope size={16} />
+              <span>manager@gwcc.org.au</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <FaPhone size={16} />
+              <span>03 6272 2560</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <FaFacebook size={16} />
+              <Link href="#" className="underline hover:text-blue-400">
+                Goodwood Community Centre, Tasmania
+              </Link>
+            </div>
+            <div className="flex items-center gap-2">
+              <FaClock size={16} />
+              <span>Open: Monday - Friday, 9:00 AM – 4:00 PM</span>
+            </div>
+          </div>
         </div>
 
-        {/* Centered Text */}
-        <div className="text-center flex-1">
-          <p className="text-sm md:text-base max-w-lg mx-auto">
-            © {new Date().getFullYear()} Goodwood Community Centre | ABN
-            89459396771 | Reg. No. XXXXXXX
-          </p>
-
-          <Link rel="stylesheet" href="/events/create">
-            create{" "}
-          </Link>
-
-          <Link rel="stylesheet" href="/services/add">
-            add{" "}
-          </Link>
+        {/* About Links */}
+        <div>
+          <h3 className="text-base font-semibold mb-4 ">ABOUT</h3>
+          <ul className="space-y-2 text-sm">
+            <li>
+              <Link href="#">Home</Link>
+            </li>
+            <li>
+              <Link href="#">About Us</Link>
+            </li>
+            <li>
+              <Link href="#">Hall Hire</Link>
+            </li>
+            <li>
+              <Link href="#">Membership</Link>
+            </li>
+            <li>
+              <Link href="#">Contact Us</Link>
+            </li>
+          </ul>
         </div>
 
-        {/* Social Links (arranged vertically) */}
-        <div className="flex flex-col gap-6">
-          <Link
-            href="#"
-            style={{
-              background: "linear-gradient(45deg, #833AB4, #FD1D1D, #FCB045)",
-            }}
-            className="hover:opacity-90 transition px-4 py-1 rounded flex items-center gap-2"
-          >
-            <FaInstagram size={20} />
-            Instagram
-          </Link>
-          <Link
-            href="#"
-            className="bg-blue-500 hover:bg-blue-400 transition px-4 py-2 rounded flex items-center gap-2"
-          >
-            <FaFacebook size={20} />
-            Facebook
-          </Link>
+        {/* Services Links */}
+        <div>
+          <h3 className="text-base font-semibold mb-4">SERVICES</h3>
+          <ul className="space-y-2 text-sm">
+            <li>
+              <Link href="#">Events</Link>
+            </li>
+            <li>
+              <Link href="#">Programs</Link>
+            </li>
+            <li>
+              <Link href="#">Venue Hire</Link>
+            </li>
+            <li>
+              <Link href="#">Community Support</Link>
+            </li>
+          </ul>
         </div>
+
+        {/* Quick Links */}
+        <div>
+          <h3 className="text-base font-semibold mb-4">QUICK LINKS</h3>
+          <ul className="space-y-2 text-sm">
+            <li>
+              <Link href="/events/create">Create Event</Link>
+            </li>
+            <li>
+              <Link href="/services/add">Add Service</Link>
+            </li>
+            <li>
+              <Link href="/Admin/staff">Admin</Link>
+            </li>
+            <li>
+              <Link href="#">Volunteer</Link>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      {/* Bottom Copyright */}
+      <div className="border-t border-gray-800 mt-8 pt-4 text-center text-xs text-gray-400">
+        © {new Date().getFullYear()} Goodwood Community Centre. All rights
+        reserved.
       </div>
     </footer>
   );

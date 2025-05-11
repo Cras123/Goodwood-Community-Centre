@@ -1,16 +1,27 @@
-// models/Event.ts
-import mongoose, { Schema, model, models } from "mongoose";
+import mongoose from "mongoose";
 
-const EventSchema = new Schema({
-  title: { type: String, required: true },
-  description: { type: String },
-  date: { type: Date },
-  time: { type: String },
-  address: { type: String },
-  category: { type: String },
-  imageUrl: { type: String },
-  cost: { type: String },
-});
+const EventSchema = new mongoose.Schema(
+  {
+    title: String,
+    description: String,
+    date: Date,
+    time: String,
+    address: String,
+    category: String,
+    cost: String,
+    imageUrl: String,
+    repeatWeekly: {
+      type: Boolean,
+      default: false,
+    },
+    endRepeatDate: {
+      type: Date,
+      default: null,
+    },
+  },
+  { timestamps: true }
+);
 
-const Event = models.Event || model("Event", EventSchema);
+const Event = mongoose.models.Event || mongoose.model("Event", EventSchema);
+
 export default Event;

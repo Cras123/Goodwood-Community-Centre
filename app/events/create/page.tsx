@@ -14,6 +14,8 @@ const AddEventPage = () => {
     imageUrl: "",
     imagePreview: "",
   });
+  const [repeatWeekly, setRepeatWeekly] = useState(false);
+  const [endRepeatDate, setEndRepeatDate] = useState("");
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -61,6 +63,8 @@ const AddEventPage = () => {
       category: form.category,
       cost: form.cost,
       imageUrl: form.imageUrl,
+      repeatWeekly,
+      endRepeatDate: repeatWeekly ? endRepeatDate : null,
     };
 
     try {
@@ -83,6 +87,8 @@ const AddEventPage = () => {
           imageUrl: "",
           imagePreview: "",
         });
+        setRepeatWeekly(false); // ✅ Also reset
+        setEndRepeatDate("");
       } else {
         alert("Error adding event");
       }
@@ -124,6 +130,31 @@ const AddEventPage = () => {
             className="w-full border p-2 rounded"
             required
           />
+
+          <div className="flex items-center gap-2 mt-4">
+            <input
+              type="checkbox"
+              id="repeatWeekly"
+              checked={repeatWeekly}
+              onChange={(e) => setRepeatWeekly(e.target.checked)}
+            />
+            <label htmlFor="repeatWeekly" className="text-gray-700">
+              Repeat Weekly
+            </label>
+          </div>
+
+          {repeatWeekly && (
+            <div className="mt-4">
+              <label className="block text-gray-700 mb-2">Repeat Until</label>
+              <input
+                type="date"
+                value={endRepeatDate}
+                onChange={(e) => setEndRepeatDate(e.target.value)}
+                className="w-full border p-2 rounded"
+              />
+            </div>
+          )}
+
           <input
             type="time"
             name="time"

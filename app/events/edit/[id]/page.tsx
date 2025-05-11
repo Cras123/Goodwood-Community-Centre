@@ -1,4 +1,3 @@
-// app/events/edit/[id]/page.tsx
 "use client";
 
 import { useEffect, useState } from "react";
@@ -14,6 +13,8 @@ interface EventType {
   category: string;
   cost: string;
   imageUrl: string;
+  repeatWeekly?: boolean;
+  endRepeatDate?: string;
 }
 
 const EditEventPage = () => {
@@ -24,6 +25,8 @@ const EditEventPage = () => {
   const [form, setForm] = useState<EventType | null>(null);
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [preview, setPreview] = useState<string>("");
+  const [repeatWeekly, setRepeatWeekly] = useState<boolean>(false);
+  const [endRepeatDate, setEndRepeatDate] = useState<string>("");
 
   useEffect(() => {
     const fetchEvent = async () => {
@@ -31,6 +34,10 @@ const EditEventPage = () => {
       const data = await res.json();
       setForm(data);
       setPreview(data.imageUrl);
+      setRepeatWeekly(!!data.repeatWeekly);
+      setEndRepeatDate(
+        data.endRepeatDate ? data.endRepeatDate.split("T")[0] : ""
+      );
     };
     if (eventId) fetchEvent();
   }, [eventId]);
@@ -77,6 +84,8 @@ const EditEventPage = () => {
     const updatedEvent = {
       ...form,
       imageUrl,
+      repeatWeekly,
+      endRepeatDate: repeatWeekly ? endRepeatDate : null,
     };
 
     const res = await fetch(`/api/events/${eventId}`, {
@@ -172,6 +181,30 @@ const EditEventPage = () => {
           <option value="Health">Health</option>
           <option value="Other">Other</option>
         </select>
+
+        <div className="flex items-center gap-2 mt-4">
+          <input
+            type="checkbox"
+            id="repeatWeekly"
+            checked={repeatWeekly}
+            onChange={(e) => setRepeatWeekly(e.target.checked)}
+          />
+          <label htmlFor="repeatWeekly" className="text-gray-700">
+            Repeat Weekly
+          </label>
+        </div>
+
+        {repeatWeekly && (
+          <div className="mt-2">
+            <label className="block text-gray-700 mb-1">Repeat Until</label>
+            <input
+              type="date"
+              value={endRepeatDate}
+              onChange={(e) => setEndRepeatDate(e.target.value)}
+              className="w-full border p-2 rounded"
+            />
+          </div>
+        )}
 
         <input
           type="file"
