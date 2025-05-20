@@ -7,6 +7,9 @@ import RulesSection from "@/components/HireHall/RulesSection";
 import BookingForm from "@/components/HireHall/BookingForm";
 import { halls as mockHalls, hallRules as mockRules } from "@/data/hallData";
 import { Hall, HallRules } from "@/app/types/hallTypes";
+
+import { Calendar } from "react-big-calendar";
+import CalendarPage from "@/components/Calender";
 const HireHallPage: React.FC = () => {
   // Add types to state variables
   const [halls, setHalls] = useState<Hall[]>([]);
@@ -90,6 +93,7 @@ const HireHallPage: React.FC = () => {
               {halls.length > 0 ? (
                 halls.map((hall) => (
                   <div key={hall.id} className="mb-10">
+                    <CalendarPage />
                     <HallInfo hall={hall} />
                     <AvailabilityViewer hall={hall} />
                   </div>

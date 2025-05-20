@@ -14,6 +14,7 @@
     "aos": "^2.3.4",
     "bcryptjs": "^3.0.2",
     "cloudinary": "^2.6.0",
+    "date-fns": "^4.1.0",
     "framer-motion": "^12.6.2",
     "leaflet": "^1.9.4",
     "mongodb": "^6.15.0",
@@ -21,6 +22,7 @@
     "next": "15.2.3",
     "next-auth": "^4.24.11",
     "react": "^19.0.0",
+    "react-big-calendar": "^1.18.0",
     "react-dom": "^19.0.0",
     "react-icons": "^5.5.0",
     "react-intersection-observer": "^9.16.0",
@@ -35,10 +37,12 @@
     "@types/leaflet": "^1.9.17",
     "@types/node": "20.17.30",
     "@types/react": "19.1.2",
+    "@types/react-big-calendar": "^1.16.1",
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "15.2.3",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3"
   }
 }

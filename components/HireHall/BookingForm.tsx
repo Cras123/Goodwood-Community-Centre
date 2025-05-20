@@ -2,18 +2,23 @@
 import React, { useState } from "react";
 import { halls as availableHalls } from "@/data/hallData"; // Import halls for dropdown
 import { HallRules, BookingFormData } from "@/app/types/hallTypes"; // Import types
+import { useSearchParams } from "next/navigation";
 
 interface BookingFormProps {
   rules: HallRules; // Rules object is expected
+  defaultDate?: string;
 }
 
 const BookingForm: React.FC<BookingFormProps> = ({ rules }) => {
+  const searchParams = useSearchParams();
+  const selectedDate = searchParams.get("date"); // e.g. "2025-06-01"
+
   const initialFormData: BookingFormData = {
     name: "",
     email: "",
     phone: "",
     hallId: availableHalls[0]?.id || "", // Default to first hall
-    eventDate: "",
+    eventDate: selectedDate || "",
     startTime: "",
     endTime: "",
     eventType: "",
@@ -32,25 +37,38 @@ const BookingForm: React.FC<BookingFormProps> = ({ rules }) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  // Type the event parameter for form submission
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setStatusMessage("Processing your inquiry...");
+    setStatusMessage("Submitting your inquiry...");
 
-    // --- TODO: Backend Integration ---
-    console.log("Submitting booking inquiry:", formData);
-    // Replace with actual API call (e.g., using fetch or axios)
-    // fetch('/api/booking-inquiries', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(formData)})
-    //  .then(response => response.json())
-    //  .then(data => { setStatusMessage('Success...'); setFormData(initialFormData); })
-    //  .catch(error => { setStatusMessage('Error...'); });
-    setTimeout(() => {
+    try {
+      const response = await fetch("/api/bookings", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        setStatusMessage(
+          error.error || "This hall is already booked for the selected date."
+        );
+        return;
+      }
+
+      const result = await response.json();
       setStatusMessage(
-        `Thank you, ${formData.name}! Your inquiry for ${formData.eventDate} has been received. We will contact you shortly via ${formData.email} or ${formData.phone}.`
+        `Thank you, ${result.booking.name}! Your booking for ${result.booking.eventDate} has been received.`
       );
-      // setFormData(initialFormData); // Reset form
-    }, 1500);
-    // --- End Backend Integration Placeholder ---
+      setFormData(initialFormData); // Reset form
+    } catch (err: any) {
+      console.error("Booking failed:", err);
+      setStatusMessage(
+        "Error submitting your booking. Please try again later."
+      );
+    }
   };
 
   return (

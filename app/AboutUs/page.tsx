@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { motion, useAnimation } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 import Link from "next/link";
+import Offerings from "@/components/Offering";
 interface Staff {
   _id: string;
   name: string;
@@ -13,6 +14,10 @@ interface Staff {
 
 const AboutUs: React.FC = () => {
   const [staffList, setStaffList] = useState<Staff[]>([]);
+  const [offerings, setOfferings] = useState([]);
+  const [showForm, setShowForm] = useState(false);
+  const [formData, setFormData] = useState({ title: "", content: "" });
+  const [editId, setEditId] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchStaff = async () => {
@@ -147,58 +152,7 @@ const AboutUs: React.FC = () => {
 
       {/* What We Offer Section */}
       <section className="py-16 bg-gradient-to-br from-indigo-50 via-white to-purple-50">
-        <div className="container mx-auto px-4">
-          <motion.h2
-            className="text-3xl font-bold text-gray-800 mb-8 text-center"
-            ref={servicesAnimation.ref}
-            initial="hidden"
-            animate={servicesAnimation.controls}
-            variants={slideUp}
-          >
-            What We Offer
-          </motion.h2>
-
-          <motion.div
-            className="grid md:grid-cols-2 gap-8"
-            variants={staggerChildren}
-            initial="hidden"
-            animate={servicesAnimation.controls}
-          >
-            {[
-              {
-                title: "Counseling Services",
-                content:
-                  "Professional, compassionate counseling to support mental health and emotional wellbeing.",
-              },
-              {
-                title: "Food Relief Programs",
-                content:
-                  "Ensuring that no family in our community goes hungry with nutritious meals and grocery support.",
-              },
-              {
-                title: "Playgroup Activities",
-                content:
-                  "Safe, engaging spaces for children to learn, play, and build early social skills.",
-              },
-              {
-                title: "Digital Literacy Workshops",
-                content:
-                  "Helping individuals bridge the digital divide with basic computer and internet skills education.",
-              },
-            ].map((service, index) => (
-              <motion.div
-                key={index}
-                className="bg-white p-6 rounded-lg shadow-lg hover:shadow-2xl transform transition hover:scale-105"
-                variants={cardVariant}
-              >
-                <h3 className="text-xl font-semibold text-gray-800 mb-2">
-                  {service.title}
-                </h3>
-                <p className="text-gray-600">{service.content}</p>
-              </motion.div>
-            ))}
-          </motion.div>
-        </div>
+        <Offerings />
       </section>
 
       {/* Join Us Section */}
@@ -348,7 +302,59 @@ const AboutUs: React.FC = () => {
           </div>
         </div>
       </section>
-      {/* Staff Section */}
+      {/* Child Safety Statement Section */}
+      <section className="py-16 bg-gradient-to-b from-red-50 to-white">
+        <div className="container mx-auto px-4 max-w-4xl">
+          <h2 className="text-3xl font-bold text-gray-800 mb-8 text-center">
+            Child Safety Statement of Commitment
+          </h2>
+          <ul className="list-disc space-y-4 text-gray-700 pl-6">
+            <li>GWCC is committed to child safety.</li>
+            <li>
+              We want children to be safe, happy and empowered. We support and
+              respect all children, as well as our staff and volunteers.
+            </li>
+            <li>
+              We are committed to the safety, participation and empowerment of
+              all children.
+            </li>
+            <li>
+              We have zero tolerance of child abuse, and all allegations and
+              safety concerns will be treated very seriously and consistently
+              with our robust policies and procedures. We have legal and moral
+              obligations to contact authorities when we are worried about a
+              child’s safety, which we follow rigorously.
+            </li>
+            <li>
+              We believe children when they raise a concern or make an
+              allegation.
+            </li>
+            <li>
+              GWCC is committed to preventing child abuse and identifying risks
+              early, and removing and reducing these risks. We have robust human
+              resources and recruitment practices for all staff and volunteers,
+              and are committed to regularly training and educating our staff
+              and volunteers on child abuse risks.
+            </li>
+            <li>
+              We support and respect all children, as well as our staff and
+              volunteers. We are committed to the cultural safety of Aboriginal
+              children, the cultural safety of children from culturally and/or
+              linguistically diverse backgrounds, and to providing a safe
+              environment for children with a disability.
+            </li>
+            <li>
+              We have specific policies, procedures and training in place that
+              support our leadership team, staff and volunteers to achieve these
+              commitments.
+            </li>
+            <li className="font-semibold text-red-600">
+              If you believe a child is at immediate risk, phone 000.
+            </li>
+          </ul>
+        </div>
+      </section>
+
       {/* Staff Section */}
       <section className="py-16 bg-white">
         <div className="container mx-auto px-4">
