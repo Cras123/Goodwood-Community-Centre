@@ -52,51 +52,54 @@ const Services = () => {
   );
 
   return (
-    <section className="my-10 px-4">
-      <h2 className="text-2xl font-bold text-center mb-6">Our Services</h2>
+    <section className="relative py-10 bg-gradient-to-br from-blue-50 via-white to-purple-50">
+      <div className="container mx-auto px-4">
+        <h2 className="text-3xl font-bold text-center text-gray-800 mb-10">
+          Our Services
+        </h2>
 
-      <div className="flex justify-between items-center mb-6 max-w-6xl mx-auto">
-        <button
-          onClick={handlePrev}
-          disabled={visibleStartIndex === 0}
-          className="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600 disabled:bg-gray-300"
-        >
-          &lt; Prev
-        </button>
-
-        <button
-          onClick={handleNext}
-          disabled={visibleStartIndex + itemsPerPage >= totalItems}
-          className="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600 disabled:bg-gray-300"
-        >
-          Next &gt;
-        </button>
-      </div>
-
-      <div className="relative overflow-hidden max-w-6xl mx-auto">
-        <AnimatePresence mode="wait" initial={false}>
-          <motion.div
-            key={visibleStartIndex}
-            initial={{ x: direction > 0 ? -300 : 300, opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            exit={{ x: direction > 0 ? 300 : -300, opacity: 0 }}
-            transition={{ duration: 0.5 }}
-            className="flex justify-center gap-6"
+        <div className="flex justify-between items-center mb-8 max-w-6xl mx-auto">
+          <button
+            onClick={handlePrev}
+            disabled={visibleStartIndex === 0}
+            className="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 disabled:bg-gray-300 transition"
           >
-            {displayedServices.map((service) => (
-              <Link
-                href={`/services/${service._id}`}
-                key={service._id}
-                className="w-full md:w-1/4"
-              >
-                <OverviewCard
-                  title={service.title}
-                  imageSrc={service.imageUrl}
-                />
-              </Link>
-            ))}
-          </motion.div>
-        </AnimatePresence>
+            &lt; Prev
+          </button>
+          <button
+            onClick={handleNext}
+            disabled={visibleStartIndex + itemsPerPage >= totalItems}
+            className="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 disabled:bg-gray-300 transition"
+          >
+            Next &gt;
+          </button>
+        </div>
+
+        <div className="relative overflow-hidden max-w-6xl mx-auto">
+          <AnimatePresence mode="wait" initial={false}>
+            <motion.div
+              key={visibleStartIndex}
+              initial={{ x: direction > 0 ? -300 : 300, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              exit={{ x: direction > 0 ? 300 : -300, opacity: 0 }}
+              transition={{ duration: 0.5 }}
+              className="flex justify-center gap-6"
+            >
+              {displayedServices.map((service) => (
+                <Link
+                  href={`/services/${service._id}`}
+                  key={service._id}
+                  className="w-full md:w-1/4"
+                >
+                  <OverviewCard
+                    title={service.title}
+                    imageSrc={service.imageUrl}
+                  />
+                </Link>
+              ))}
+            </motion.div>
+          </AnimatePresence>
+        </div>
       </div>
     </section>
   );

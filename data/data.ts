@@ -19,8 +19,8 @@ export const scis = [
 export const heroSlides = [
   {
     id: 1,
-    bgImg: "/goodwood_photos/hero1.png",
-    title: "Welcome to Goodwood Community Centre of Tasmania",
+    videoUrl: "/goodwood_photos/hero1.mp4",
+    title: "",
     brief: ``,
   },
   {
@@ -41,7 +41,7 @@ export const heroSlides = [
   },
   {
     id: 4,
-    bgImg: "/goodwood_photos/hero4.png",
+    bgImg: "/goodwood_photos/hero1.png",
     title: "Thanks to all the members and staff ",
     brief: ``,
   },

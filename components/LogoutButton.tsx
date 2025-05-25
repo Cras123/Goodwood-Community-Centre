@@ -1,5 +1,6 @@
 "use client";
 import { signOut, useSession } from "next-auth/react";
+import { LogOut } from "lucide-react";
 
 export default function LogoutButton() {
   const { data: session } = useSession();
@@ -13,9 +14,10 @@ export default function LogoutButton() {
     <button
       onClick={handleLogout}
       title="Logout"
-      className="w-fit h-10 rounded-full bg-[#00aba9] text-white font-bold flex items-center justify-center hover:bg-[#00724f] transition-all"
+      className="flex items-center gap-2 px-4 py-2 rounded-full bg-[#00aba9] text-white font-medium hover:bg-[#007d7b] transition-all duration-200 shadow-md hover:shadow-lg"
     >
-      Log out
+      <LogOut size={18} />
+      <span className="hidden sm:inline">Log out</span>
     </button>
   );
 }

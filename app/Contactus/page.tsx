@@ -6,7 +6,6 @@ import {
   FaPhone,
   FaEnvelope,
   FaComments,
-  FaFileUpload,
   FaRegClock,
   FaFacebook,
 } from "react-icons/fa";
@@ -14,7 +13,6 @@ import { MdLocationOn, MdEmail, MdPhone } from "react-icons/md";
 import Chatbot from "@/components/Chatbot"; // Adjust the import path as needed
 
 const ContactUs: React.FC = () => {
-  const [fileName, setFileName] = useState("");
   const [formStatus, setFormStatus] = useState<{
     message: string;
     type: "success" | "error" | null;
@@ -50,40 +48,34 @@ const ContactUs: React.FC = () => {
   }, [captchaInput, num1, num2]);
   // --- End CAPTCHA State ---
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files.length > 0) {
-      setFileName(e.target.files[0].name);
-    } else {
-      setFileName("");
-    }
-  };
-
-  const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setFormStatus({ message: "", type: null });
 
     if (!isCaptchaVerified) {
-      setFormStatus({
-        message: "Please complete the human verification step.",
-        type: "error",
-      });
-      document.getElementById("captcha")?.focus();
+      setFormStatus({ message: "Please complete the CAPTCHA", type: "error" });
       return;
     }
 
     const formData = new FormData(e.currentTarget);
     const data = Object.fromEntries(formData.entries());
-    console.log("Form submitted data:", data);
 
-    setFormStatus({
-      message:
-        "Thank you! Your message has been sent successfully. We'll aim to respond within 1-2 business days.",
-      type: "success",
-    });
+    try {
+      const res = await fetch("/api/feedback", {
+        method: "POST",
+        body: JSON.stringify(data),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
-    formRef.current?.reset();
-    setFileName("");
-    generateCaptcha();
+      if (!res.ok) throw new Error("Failed to submit");
+
+      setFormStatus({ message: "Submitted successfully", type: "success" });
+      formRef.current?.reset();
+      generateCaptcha();
+    } catch (err) {
+      setFormStatus({ message: "Submission failed", type: "error" });
+    }
   };
 
   // --- Contact Details ---
@@ -159,27 +151,7 @@ const ContactUs: React.FC = () => {
                 className="w-full pl-10 p-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 resize-y"
               ></textarea>
             </div>
-            {/* File Upload */}
-            <div>
-              <input
-                type="file"
-                id="file-upload"
-                onChange={handleFileChange}
-                name="attachment"
-                accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.txt"
-                className="hidden"
-              />
-              <label
-                htmlFor="file-upload"
-                className="flex items-center gap-3 p-3 border-2 border-dashed border-gray-300 rounded cursor-pointer hover:border-blue-500 hover:bg-gray-50"
-              >
-                <FaFileUpload className="text-blue-500" />
-                <span>{fileName || "Upload File (Optional)"}</span>
-              </label>
-              <p className="mt-2 text-xs text-gray-500">
-                Supported: PDF, DOC(X), JPG, PNG, TXT (Max 5MB)
-              </p>
-            </div>
+
             {/* NDA Checkbox */}
             <div className="flex items-center gap-2">
               <input
@@ -311,11 +283,6 @@ const ContactUs: React.FC = () => {
 
       {/* Chatbot Component */}
       <Chatbot />
-
-      {/* Footer */}
-      <footer className="bg-gray-900 text-white text-center p-4 mt-10">
-        <p>© 2025 Goodwood Community Services. All rights reserved.</p>
-      </footer>
     </div>
   );
 };

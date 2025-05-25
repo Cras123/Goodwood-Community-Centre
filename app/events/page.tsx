@@ -4,6 +4,13 @@ import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
+import { Playfair_Display } from "next/font/google";
+
+const playfair = Playfair_Display({
+  subsets: ["latin"],
+  weight: ["400", "600", "700"],
+  variable: "--font-playfair",
+});
 
 interface Event {
   _id: string;
@@ -74,7 +81,7 @@ const EventsPage = () => {
       {/* Hero Section */}
       {latestEvent && (
         <motion.div
-          className="relative h-[500px] w-full mb-16 rounded-lg overflow-hidden shadow-2xl"
+          className="relative h-[400px] sm:h-[500px] w-full mb-16 rounded-lg overflow-hidden shadow-xl"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.2 }}
@@ -87,11 +94,11 @@ const EventsPage = () => {
             priority
           />
 
-          <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/30 to-black/60 flex items-center justify-center">
-            <div className="bg-white/10 backdrop-blur-md p-10 rounded-3xl shadow-2xl max-w-xl text-center">
-              {/* 🛡️ New Motivational Line */}
+          {/* Darker overlay */}
+          <div className="absolute inset-0 bg-black/50 flex items-center justify-center px-4 sm:px-8 text-center">
+            <div className="bg-black/40 backdrop-blur-sm px-4 py-6 sm:px-10 sm:py-8 rounded-2xl shadow-2xl w-full max-w-2xl border border-white/10">
               <motion.p
-                className="text-md md:text-lg text-[#00aba9] font-semibold tracking-wide uppercase"
+                className="text-sm sm:text-base text-[#00aba9] font-semibold uppercase tracking-wide mb-2"
                 initial={{ y: -20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.3 }}
@@ -99,16 +106,15 @@ const EventsPage = () => {
                 Are you ready for the event?
               </motion.p>
               <motion.h2
-                className="text-4xl md:text-5xl font-bold text-[#00aba9] mb-4 drop-shadow-lg"
+                className={`text-3xl sm:text-5xl font-bold text-gray-400 drop-shadow-lg mb-3 ${playfair.className}`}
                 initial={{ y: 30, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.4 }}
               >
                 {latestEvent.title}
               </motion.h2>
-
               <motion.p
-                className="text-lg md:text-xl text-[#00aba9]  mb-6"
+                className="text-base sm:text-lg text-gray-200 mb-6"
                 initial={{ y: 30, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.5 }}
@@ -119,10 +125,9 @@ const EventsPage = () => {
                   year: "numeric",
                 })}
               </motion.p>
-
               <motion.button
                 onClick={() => router.push(`/events/${latestEvent._id}`)}
-                className="bg-[#00aba9] hover:bg-[#23677c] text-white font-semibold px-8 py-3 rounded-full shadow-md hover:shadow-lg transition"
+                className="bg-[#00aba9] hover:bg-[#00aba9] text-black font-semibold px-6 sm:px-8 py-2 sm:py-3 rounded-full shadow-md hover:shadow-lg transition"
                 whileHover={{ scale: 1.05 }}
               >
                 View Event
@@ -225,7 +230,7 @@ const EventsPage = () => {
                       </p>
                     )}
 
-                    <p className="text-sm font-semibold text-green-600">
+                    <p className="text-sm font-semibold text-green-800">
                       {event.cost}
                     </p>
                   </div>

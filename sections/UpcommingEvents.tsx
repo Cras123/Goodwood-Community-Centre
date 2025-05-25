@@ -52,29 +52,30 @@ const UpcomingEvents = () => {
   );
 
   return (
-    <section className="my-10 px-4">
-      <h2 className="text-2xl font-bold text-center mb-6">
-        Upcoming Events / Programs
+    <section className=" py-10 bg-gradient-to-br from-blue-50 via-white to-green-50 px-4">
+      <h2 className="text-3xl font-bold text-center text-gray-800 mb-10">
+        Upcoming Events & Programs
       </h2>
 
-      <div className="flex justify-between items-center mb-6 max-w-6xl mx-auto">
+      {/* Navigation Buttons */}
+      <div className="flex justify-between items-center mb-8 max-w-6xl mx-auto">
         <button
           onClick={handlePrev}
           disabled={visibleStartIndex === 0}
-          className="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600 disabled:bg-gray-300"
+          className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 disabled:bg-gray-300 transition"
         >
           &lt; Prev
         </button>
-
         <button
           onClick={handleNext}
           disabled={visibleStartIndex + itemsPerPage >= totalItems}
-          className="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600 disabled:bg-gray-300"
+          className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 disabled:bg-gray-300 transition"
         >
           Next &gt;
         </button>
       </div>
 
+      {/* Event Cards */}
       <div className="relative overflow-hidden max-w-6xl mx-auto">
         <AnimatePresence mode="wait" initial={false}>
           <motion.div

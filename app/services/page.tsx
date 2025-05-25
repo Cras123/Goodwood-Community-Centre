@@ -83,7 +83,7 @@ const ServicesPage = () => {
                 </span>
                 <Link
                   href={`/services/${service._id}`}
-                  className="block mt-4 text-blue-600 font-semibold hover:underline"
+                  className="block mt-4 text-blue-400 font-semibold hover:underline"
                 >
                   Learn More →
                 </Link>
