@@ -23,7 +23,18 @@ const UpcomingEvents = () => {
       try {
         const res = await fetch("/api/events");
         const data = await res.json();
-        setEvents(data);
+
+        // ✅ Filter events that are today or later
+        const today = new Date();
+        today.setHours(0, 0, 0, 0); // ✅ Set time to 00:00:00
+
+        const upcoming = data.filter((event: any) => {
+          const eventDate = new Date(event.date);
+          eventDate.setHours(0, 0, 0, 0); // ✅ Normalize event date
+          return eventDate >= today;
+        });
+
+        setEvents(upcoming);
       } catch (error) {
         console.error("Failed to fetch events:", error);
       }

@@ -1,26 +1,19 @@
-import mongoose, { Schema, model, models } from "mongoose";
+import mongoose from "mongoose";
 
-const ParticipantSchema = new Schema(
+const participantSchema = new mongoose.Schema(
   {
     eventId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Event",
       required: true,
     },
-    name: {
-      type: String,
-      required: true,
-    },
-    email: {
-      type: String,
-      required: true,
-    },
-    message: {
-      type: String,
-    },
+    name: { type: String, required: true },
+    email: { type: String, required: true },
+    phone: { type: String },
+    address: { type: String },
     paymentStatus: {
       type: String,
-      enum: ["Pending", "Paid"],
+      enum: ["Pending", "Paid", "Free"],
       default: "Pending",
     },
   },
@@ -28,6 +21,7 @@ const ParticipantSchema = new Schema(
 );
 
 const Participant =
-  models.Participant || model("Participant", ParticipantSchema);
+  mongoose.models.Participant ||
+  mongoose.model("Participant", participantSchema);
 
 export default Participant;

@@ -2,6 +2,11 @@
 import React, { useState, useRef } from "react";
 import Image from "next/image";
 import { MembershipFormData } from "@/app/types/membershipTypes";
+import Payment from "@/components/Payment";
+import PaymentForm from "@/components/PaymentForm";
+import { Elements } from "@stripe/react-stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
+import MembershipPaymentPopup from "@/components/MembershipPaymentPopup";
 
 const MembershipPage: React.FC = () => {
   const initialFormData: MembershipFormData = {
@@ -15,6 +20,9 @@ const MembershipPage: React.FC = () => {
     membershipType: "",
     agreeToConduct: false,
   };
+  const stripePromise = loadStripe(
+    process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!
+  );
 
   const formRef = useRef<HTMLFormElement>(null);
   const [formData, setFormData] = useState<MembershipFormData>(initialFormData);
@@ -22,7 +30,12 @@ const MembershipPage: React.FC = () => {
   const [formError, setFormError] = useState<string | null>(null);
   const [showCodeOfConduct, setShowCodeOfConduct] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
-  const totalSteps = 2;
+  const [membershipId, setMembershipId] = useState<string | null>(null);
+  const [showPaymentPopup, setShowPaymentPopup] = useState(false);
+  const totalSteps = 3; // Total number of steps in the form
+  const [clientSecret, setClientSecret] = useState<string | undefined>(
+    undefined
+  );
 
   // Handle input changes
   const handleInputChange = (
@@ -56,7 +69,7 @@ const MembershipPage: React.FC = () => {
   };
 
   // Form submission handler
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setFormError(null);
 
@@ -76,11 +89,30 @@ const MembershipPage: React.FC = () => {
       return;
     }
 
-    console.log("Membership Form Data Submitted:", formData);
-    setSubmitted(true);
+    try {
+      const res = await fetch("/api/membership", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
 
-    // Scroll to top of page to see confirmation message
-    window.scrollTo({ top: 0, behavior: "smooth" });
+      const result = await res.json();
+      if (!res.ok || !result.data || !result.data._id) {
+        throw new Error(result.message || "Invalid response from server");
+      }
+      const membershipId = result.data._id; // Adjust this depending on how you return it from backend
+      setMembershipId(membershipId);
+      setShowPaymentPopup(true);
+      setSubmitted(true);
+
+      setCurrentStep(3); // Move to confirmation step
+      //window.scrollTo({ top: 0, behavior: "smooth" });
+    } catch (error: any) {
+      console.error("Submit error:", error.message);
+      setFormError(error.message || "Submission failed");
+    }
   };
 
   return (
@@ -237,7 +269,7 @@ const MembershipPage: React.FC = () => {
               </p>
             </div>
 
-            {submitted ? (
+            {submitted && currentStep === 4 ? (
               <div className="bg-gradient-to-r from-green-50 to-emerald-50 border-l-4 border-green-500 p-8 rounded-lg shadow-lg">
                 <div className="flex items-center mb-4">
                   <svg
@@ -302,6 +334,22 @@ const MembershipPage: React.FC = () => {
                       >
                         2
                       </div>
+                      {/* Connector 2 → 3 */}
+                      <div
+                        className={`h-1 flex-1 mx-2 ${
+                          currentStep >= 3 ? "bg-green-600" : "bg-gray-200"
+                        }`}
+                      ></div>
+                      {/* Step 3 */}
+                      <div
+                        className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                          currentStep >= 3
+                            ? "bg-green-600 text-white"
+                            : "bg-gray-200 text-gray-600"
+                        }`}
+                      >
+                        3
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -328,398 +376,419 @@ const MembershipPage: React.FC = () => {
                 )}
 
                 {/* Rest of the form stays the same */}
-                <form ref={formRef} onSubmit={handleSubmit} className="p-8">
-                  {/* Step 1: Personal Information */}
-                  {currentStep === 1 && (
-                    <div className="space-y-6 transition-all duration-300">
-                      <h3 className="text-xl font-semibold text-gray-900 mb-4">
-                        Personal Information
-                      </h3>
+                {currentStep < 3 && (
+                  <form ref={formRef} onSubmit={handleSubmit} className="p-8">
+                    {/* Step 1: Personal Information */}
 
-                      <div>
-                        <label
-                          htmlFor="name"
-                          className="block text-sm font-medium text-gray-700 mb-1"
-                        >
-                          Full Name <span className="text-red-500">*</span>
-                        </label>
-                        <input
-                          type="text"
-                          id="name"
-                          name="name"
-                          value={formData.name}
-                          onChange={handleInputChange}
-                          required
-                          className="w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 transition-colors duration-200"
-                          placeholder="Enter your full name"
-                        />
-                      </div>
+                    {currentStep === 1 && (
+                      <div className="space-y-6 transition-all duration-300">
+                        <h3 className="text-xl font-semibold text-gray-900 mb-4">
+                          Personal Information
+                        </h3>
 
-                      <div>
-                        <label
-                          htmlFor="email"
-                          className="block text-sm font-medium text-gray-700 mb-1"
-                        >
-                          Email Address <span className="text-red-500">*</span>
-                        </label>
-                        <input
-                          type="email"
-                          id="email"
-                          name="email"
-                          value={formData.email}
-                          onChange={handleInputChange}
-                          required
-                          className="w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 transition-colors duration-200"
-                          placeholder="your.email@example.com"
-                        />
-                      </div>
-
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                           <label
-                            htmlFor="gender"
+                            htmlFor="name"
                             className="block text-sm font-medium text-gray-700 mb-1"
                           >
-                            Gender
-                          </label>
-                          <select
-                            id="gender"
-                            name="gender"
-                            value={formData.gender}
-                            onChange={handleInputChange}
-                            className="w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 bg-white transition-colors duration-200"
-                          >
-                            <option value="">Select...</option>
-                            <option value="Male">Male</option>
-                            <option value="Female">Female</option>
-                            <option value="Other">Other</option>
-                          </select>
-                        </div>
-                        <div>
-                          <label
-                            htmlFor="phone"
-                            className="block text-sm font-medium text-gray-700 mb-1"
-                          >
-                            Phone Number
+                            Full Name <span className="text-red-500">*</span>
                           </label>
                           <input
-                            type="tel"
-                            id="phone"
-                            name="phone"
-                            value={formData.phone}
-                            onChange={handleInputChange}
-                            className="w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 transition-colors duration-200"
-                            placeholder="e.g., 0400 123 456"
-                          />
-                        </div>
-                      </div>
-
-                      <div>
-                        <label
-                          htmlFor="address"
-                          className="block text-sm font-medium text-gray-700 mb-1"
-                        >
-                          Address
-                        </label>
-                        <input
-                          type="text"
-                          id="address"
-                          name="address"
-                          value={formData.address}
-                          onChange={handleInputChange}
-                          className="w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 transition-colors duration-200"
-                          placeholder="Enter your street address"
-                        />
-                      </div>
-
-                      <div>
-                        <label
-                          htmlFor="postcode"
-                          className="block text-sm font-medium text-gray-700 mb-1"
-                        >
-                          Postcode
-                        </label>
-                        <input
-                          type="text"
-                          id="postcode"
-                          name="postcode"
-                          value={formData.postcode}
-                          onChange={handleInputChange}
-                          className="w-full md:w-1/3 px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 transition-colors duration-200"
-                          placeholder="e.g., 7010"
-                        />
-                      </div>
-
-                      <div className="pt-6 flex justify-end">
-                        <button
-                          type="button"
-                          onClick={nextStep}
-                          className="px-6 py-3 bg-green-600 text-white font-medium rounded-md shadow hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition duration-150 ease-in-out"
-                        >
-                          Continue
-                        </button>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Step 2: Membership Details & Code of Conduct */}
-                  {currentStep === 2 && (
-                    <div className="space-y-6 transition-all duration-300">
-                      <h3 className="text-xl font-semibold text-gray-900 mb-4">
-                        Membership Details
-                      </h3>
-
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                          <span className="block text-sm font-medium text-gray-700 mb-1">
-                            Photo Consent{" "}
-                            <span className="text-red-500">*</span>
-                          </span>
-                          <p className="text-xs text-gray-500 mb-2">
-                            Do you consent to the Centre using photos that may
-                            include you for promotional purposes?
-                          </p>
-                          <div className="flex items-center space-x-6 mt-1">
-                            <label
-                              htmlFor="photoConsentYes"
-                              className="flex items-center cursor-pointer"
-                            >
-                              <input
-                                type="radio"
-                                id="photoConsentYes"
-                                name="photoConsent"
-                                value="true"
-                                checked={formData.photoConsent === true}
-                                onChange={handleRadioChange}
-                                required
-                                className="focus:ring-green-500 h-4 w-4 text-green-600 border-gray-300"
-                              />
-                              <span className="ml-2 text-sm text-gray-700">
-                                Yes
-                              </span>
-                            </label>
-                            <label
-                              htmlFor="photoConsentNo"
-                              className="flex items-center cursor-pointer"
-                            >
-                              <input
-                                type="radio"
-                                id="photoConsentNo"
-                                name="photoConsent"
-                                value="false"
-                                checked={formData.photoConsent === false}
-                                onChange={handleRadioChange}
-                                required
-                                className="focus:ring-green-500 h-4 w-4 text-green-600 border-gray-300"
-                              />
-                              <span className="ml-2 text-sm text-gray-700">
-                                No
-                              </span>
-                            </label>
-                          </div>
-                        </div>
-                        <div>
-                          <label
-                            htmlFor="membershipType"
-                            className="block text-sm font-medium text-gray-700 mb-1"
-                          >
-                            Membership Type{" "}
-                            <span className="text-red-500">*</span>
-                          </label>
-                          <select
-                            id="membershipType"
-                            name="membershipType"
-                            value={formData.membershipType}
+                            type="text"
+                            id="name"
+                            name="name"
+                            value={formData.name}
                             onChange={handleInputChange}
                             required
-                            className="w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 bg-white transition-colors duration-200"
+                            className="w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 transition-colors duration-200"
+                            placeholder="Enter your full name"
+                          />
+                        </div>
+
+                        <div>
+                          <label
+                            htmlFor="email"
+                            className="block text-sm font-medium text-gray-700 mb-1"
                           >
-                            <option value="">Select...</option>
-                            <option value="New Member">New Member</option>
-                            <option value="Renewal">Renewal</option>
-                          </select>
+                            Email Address{" "}
+                            <span className="text-red-500">*</span>
+                          </label>
+                          <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            value={formData.email}
+                            onChange={handleInputChange}
+                            required
+                            className="w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 transition-colors duration-200"
+                            placeholder="your.email@example.com"
+                          />
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                          <div>
+                            <label
+                              htmlFor="gender"
+                              className="block text-sm font-medium text-gray-700 mb-1"
+                            >
+                              Gender
+                            </label>
+                            <select
+                              id="gender"
+                              name="gender"
+                              value={formData.gender}
+                              onChange={handleInputChange}
+                              className="w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 bg-white transition-colors duration-200"
+                            >
+                              <option value="">Select...</option>
+                              <option value="Male">Male</option>
+                              <option value="Female">Female</option>
+                              <option value="Other">Other</option>
+                            </select>
+                          </div>
+                          <div>
+                            <label
+                              htmlFor="phone"
+                              className="block text-sm font-medium text-gray-700 mb-1"
+                            >
+                              Phone Number
+                            </label>
+                            <input
+                              type="tel"
+                              id="phone"
+                              name="phone"
+                              value={formData.phone}
+                              onChange={handleInputChange}
+                              className="w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 transition-colors duration-200"
+                              placeholder="e.g., 0400 123 456"
+                            />
+                          </div>
+                        </div>
+
+                        <div>
+                          <label
+                            htmlFor="address"
+                            className="block text-sm font-medium text-gray-700 mb-1"
+                          >
+                            Address
+                          </label>
+                          <input
+                            type="text"
+                            id="address"
+                            name="address"
+                            value={formData.address}
+                            onChange={handleInputChange}
+                            className="w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 transition-colors duration-200"
+                            placeholder="Enter your street address"
+                          />
+                        </div>
+
+                        <div>
+                          <label
+                            htmlFor="postcode"
+                            className="block text-sm font-medium text-gray-700 mb-1"
+                          >
+                            Postcode
+                          </label>
+                          <input
+                            type="text"
+                            id="postcode"
+                            name="postcode"
+                            value={formData.postcode}
+                            onChange={handleInputChange}
+                            className="w-full md:w-1/3 px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 transition-colors duration-200"
+                            placeholder="e.g., 7010"
+                          />
+                        </div>
+
+                        <div className="pt-6 flex justify-end">
+                          <button
+                            type="button"
+                            onClick={nextStep}
+                            className="px-6 py-3 bg-green-600 text-white font-medium rounded-md shadow hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition duration-150 ease-in-out"
+                          >
+                            Continue
+                          </button>
                         </div>
                       </div>
+                    )}
 
-                      <div className="pt-2">
-                        <p className="text-sm text-gray-600 italic">
-                          Applications for membership require support of 2
-                          Centre members. If unsure please contact Centre staff
-                          to identify members. (This step is typically handled
-                          offline).
-                        </p>
-                      </div>
+                    {/* Step 2: Membership Details & Code of Conduct */}
+                    {currentStep === 2 && (
+                      <div className="space-y-6 transition-all duration-300">
+                        <h3 className="text-xl font-semibold text-gray-900 mb-4">
+                          Membership Details
+                        </h3>
 
-                      <div className="mb-4">
-                        <button
-                          type="button"
-                          onClick={() =>
-                            setShowCodeOfConduct(!showCodeOfConduct)
-                          }
-                          className="text-green-600 flex items-center hover:underline focus:outline-none"
-                        >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            className={`h-5 w-5 mr-1 transition-transform ${
-                              showCodeOfConduct ? "rotate-90" : ""
-                            }`}
-                            viewBox="0 0 20 20"
-                            fill="currentColor"
-                          >
-                            <path
-                              fillRule="evenodd"
-                              d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                              clipRule="evenodd"
-                            />
-                          </svg>
-                          {showCodeOfConduct
-                            ? "Hide GWCC Code of Conduct"
-                            : "Show GWCC Code of Conduct"}
-                        </button>
-
-                        {showCodeOfConduct && (
-                          <div className="mt-4 p-6 bg-gray-50 rounded-lg border border-gray-200 transition-all duration-300 ease-in-out">
-                            <h4 className="text-xl font-semibold text-gray-900 mb-4">
-                              Goodwood Community Centre Code of Conduct
-                            </h4>
-
-                            <div className="space-y-4">
-                              <div>
-                                <p className="font-medium text-gray-900">
-                                  Our Vision:
-                                </p>
-                                <p className="text-gray-700">
-                                  Our community is a place where everyone
-                                  belongs.
-                                </p>
-                              </div>
-
-                              <div>
-                                <p className="font-medium text-gray-900">
-                                  Our Mission:
-                                </p>
-                                <p className="text-gray-700">
-                                  We provide an opportunity to connect, learn,
-                                  share, grow and have fun.
-                                </p>
-                              </div>
-
-                              <div>
-                                <p className="font-medium text-gray-900">
-                                  Our Values:
-                                </p>
-                                <ul className="list-disc list-inside text-gray-700 space-y-1 ml-4">
-                                  <li>
-                                    Curiosity: we are open and interested in
-                                    people and ideas.
-                                  </li>
-                                  <li>
-                                    Responsibility: we take responsibility for
-                                    our decisions and actions.
-                                  </li>
-                                  <li>
-                                    Generosity: we give what we can with all
-                                    parts contributing to our work.
-                                  </li>
-                                </ul>
-                              </div>
-
-                              <div>
-                                <p className="text-gray-700">
-                                  We aim to provide a safe, friendly and
-                                  welcoming environment that everyone can
-                                  attend; by agreeing to:
-                                </p>
-                                <ul className="list-disc list-inside text-gray-700 space-y-1">
-                                  <li>Be polite to others</li>
-                                  <li>Act as a positive role model</li>
-                                  <li>
-                                    Recognise and respect personal differences
-                                  </li>
-                                  <li>Use appropriate language at all times</li>
-                                  <li>
-                                    Seek help from the Manager or staff to
-                                    address your concerns
-                                  </li>
-                                  <li>
-                                    Recognise that every visitor is important to
-                                    us
-                                  </li>
-                                  <li>
-                                    Contribute to a positive community culture
-                                  </li>
-                                </ul>
-                                <p className="text-sm text-gray-600 italic">
-                                  Failure to meet these requirements could
-                                  result in suspension or cancellation of your
-                                  membership as determined by management.
-                                </p>
-                              </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                          <div>
+                            <span className="block text-sm font-medium text-gray-700 mb-1">
+                              Photo Consent{" "}
+                              <span className="text-red-500">*</span>
+                            </span>
+                            <p className="text-xs text-gray-500 mb-2">
+                              Do you consent to the Centre using photos that may
+                              include you for promotional purposes?
+                            </p>
+                            <div className="flex items-center space-x-6 mt-1">
+                              <label
+                                htmlFor="photoConsentYes"
+                                className="flex items-center cursor-pointer"
+                              >
+                                <input
+                                  type="radio"
+                                  id="photoConsentYes"
+                                  name="photoConsent"
+                                  value="true"
+                                  checked={formData.photoConsent === true}
+                                  onChange={handleRadioChange}
+                                  required
+                                  className="focus:ring-green-500 h-4 w-4 text-green-600 border-gray-300"
+                                />
+                                <span className="ml-2 text-sm text-gray-700">
+                                  Yes
+                                </span>
+                              </label>
+                              <label
+                                htmlFor="photoConsentNo"
+                                className="flex items-center cursor-pointer"
+                              >
+                                <input
+                                  type="radio"
+                                  id="photoConsentNo"
+                                  name="photoConsent"
+                                  value="false"
+                                  checked={formData.photoConsent === false}
+                                  onChange={handleRadioChange}
+                                  required
+                                  className="focus:ring-green-500 h-4 w-4 text-green-600 border-gray-300"
+                                />
+                                <span className="ml-2 text-sm text-gray-700">
+                                  No
+                                </span>
+                              </label>
                             </div>
                           </div>
-                        )}
-                      </div>
-
-                      <div className="pt-4">
-                        <div className="flex items-start">
-                          <div className="flex items-center h-5">
-                            <input
-                              id="agreeToConduct"
-                              name="agreeToConduct"
-                              type="checkbox"
-                              checked={formData.agreeToConduct}
+                          <div>
+                            <label
+                              htmlFor="membershipType"
+                              className="block text-sm font-medium text-gray-700 mb-1"
+                            >
+                              Membership Type{" "}
+                              <span className="text-red-500">*</span>
+                            </label>
+                            <select
+                              id="membershipType"
+                              name="membershipType"
+                              value={formData.membershipType}
                               onChange={handleInputChange}
                               required
-                              className="focus:ring-green-500 h-5 w-5 text-green-600 border-gray-300 rounded"
-                            />
-                          </div>
-                          <div className="ml-3">
-                            <label
-                              htmlFor="agreeToConduct"
-                              className="font-medium text-gray-700 cursor-pointer"
+                              className="w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 bg-white transition-colors duration-200"
                             >
-                              I have read and agree to the Goodwood Community
-                              Centre Code of Conduct
-                            </label>
+                              <option value="">Select...</option>
+                              <option value="New Member">New Member</option>
+                              <option value="Renewal">Renewal</option>
+                            </select>
                           </div>
                         </div>
-                      </div>
 
-                      <div className="pt-6 flex justify-between">
-                        <button
-                          type="button"
-                          onClick={prevStep}
-                          className="px-6 py-3 bg-gray-200 text-gray-700 font-medium rounded-md shadow hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition duration-150 ease-in-out"
-                        >
-                          Back
-                        </button>
-                        <button
-                          type="submit"
-                          className="px-6 py-3 bg-green-600 text-white font-medium rounded-md shadow hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition duration-150 ease-in-out flex items-center"
-                        >
-                          <span>Submit Application</span>
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            className="h-5 w-5 ml-2"
-                            viewBox="0 0 20 20"
-                            fill="currentColor"
+                        <div className="pt-2">
+                          <p className="text-sm text-gray-600 italic">
+                            Applications for membership require support of 2
+                            Centre members. If unsure please contact Centre
+                            staff to identify members. (This step is typically
+                            handled offline).
+                          </p>
+                        </div>
+
+                        <div className="mb-4">
+                          <button
+                            type="button"
+                            onClick={() =>
+                              setShowCodeOfConduct(!showCodeOfConduct)
+                            }
+                            className="text-green-600 flex items-center hover:underline focus:outline-none"
                           >
-                            <path
-                              fillRule="evenodd"
-                              d="M10.293 15.707a1 1 0 010-1.414L14.586 10l-4.293-4.293a1 1 0 111.414-1.414l5 5a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0z"
-                              clipRule="evenodd"
-                            />
-                            <path
-                              fillRule="evenodd"
-                              d="M4.293 15.707a1 1 0 010-1.414L8.586 10 4.293 5.707a1 1 0 011.414-1.414l5 5a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0z"
-                              clipRule="evenodd"
-                            />
-                          </svg>
-                        </button>
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              className={`h-5 w-5 mr-1 transition-transform ${
+                                showCodeOfConduct ? "rotate-90" : ""
+                              }`}
+                              viewBox="0 0 20 20"
+                              fill="currentColor"
+                            >
+                              <path
+                                fillRule="evenodd"
+                                d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                                clipRule="evenodd"
+                              />
+                            </svg>
+                            {showCodeOfConduct
+                              ? "Hide GWCC Code of Conduct"
+                              : "Show GWCC Code of Conduct"}
+                          </button>
+
+                          {showCodeOfConduct && (
+                            <div className="mt-4 p-6 bg-gray-50 rounded-lg border border-gray-200 transition-all duration-300 ease-in-out">
+                              <h4 className="text-xl font-semibold text-gray-900 mb-4">
+                                Goodwood Community Centre Code of Conduct
+                              </h4>
+
+                              <div className="space-y-4">
+                                <div>
+                                  <p className="font-medium text-gray-900">
+                                    Our Vision:
+                                  </p>
+                                  <p className="text-gray-700">
+                                    Our community is a place where everyone
+                                    belongs.
+                                  </p>
+                                </div>
+
+                                <div>
+                                  <p className="font-medium text-gray-900">
+                                    Our Mission:
+                                  </p>
+                                  <p className="text-gray-700">
+                                    We provide an opportunity to connect, learn,
+                                    share, grow and have fun.
+                                  </p>
+                                </div>
+
+                                <div>
+                                  <p className="font-medium text-gray-900">
+                                    Our Values:
+                                  </p>
+                                  <ul className="list-disc list-inside text-gray-700 space-y-1 ml-4">
+                                    <li>
+                                      Curiosity: we are open and interested in
+                                      people and ideas.
+                                    </li>
+                                    <li>
+                                      Responsibility: we take responsibility for
+                                      our decisions and actions.
+                                    </li>
+                                    <li>
+                                      Generosity: we give what we can with all
+                                      parts contributing to our work.
+                                    </li>
+                                  </ul>
+                                </div>
+
+                                <div>
+                                  <p className="text-gray-700">
+                                    We aim to provide a safe, friendly and
+                                    welcoming environment that everyone can
+                                    attend; by agreeing to:
+                                  </p>
+                                  <ul className="list-disc list-inside text-gray-700 space-y-1">
+                                    <li>Be polite to others</li>
+                                    <li>Act as a positive role model</li>
+                                    <li>
+                                      Recognise and respect personal differences
+                                    </li>
+                                    <li>
+                                      Use appropriate language at all times
+                                    </li>
+                                    <li>
+                                      Seek help from the Manager or staff to
+                                      address your concerns
+                                    </li>
+                                    <li>
+                                      Recognise that every visitor is important
+                                      to us
+                                    </li>
+                                    <li>
+                                      Contribute to a positive community culture
+                                    </li>
+                                  </ul>
+                                  <p className="text-sm text-gray-600 italic">
+                                    Failure to meet these requirements could
+                                    result in suspension or cancellation of your
+                                    membership as determined by management.
+                                  </p>
+                                </div>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+
+                        <div className="pt-4">
+                          <div className="flex items-start">
+                            <div className="flex items-center h-5">
+                              <input
+                                id="agreeToConduct"
+                                name="agreeToConduct"
+                                type="checkbox"
+                                checked={formData.agreeToConduct}
+                                onChange={handleInputChange}
+                                required
+                                className="focus:ring-green-500 h-5 w-5 text-green-600 border-gray-300 rounded"
+                              />
+                            </div>
+                            <div className="ml-3">
+                              <label
+                                htmlFor="agreeToConduct"
+                                className="font-medium text-gray-700 cursor-pointer"
+                              >
+                                I have read and agree to the Goodwood Community
+                                Centre Code of Conduct
+                              </label>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="pt-6 flex justify-between">
+                          <button
+                            type="button"
+                            onClick={prevStep}
+                            className="px-6 py-3 bg-gray-200 text-gray-700 font-medium rounded-md shadow hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition duration-150 ease-in-out"
+                          >
+                            Back
+                          </button>
+                          <button
+                            type="submit"
+                            className="px-6 py-3 bg-green-600 text-white font-medium rounded-md shadow hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition duration-150 ease-in-out flex items-center"
+                          >
+                            <span>Submit Application</span>
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              className="h-5 w-5 ml-2"
+                              viewBox="0 0 20 20"
+                              fill="currentColor"
+                            >
+                              <path
+                                fillRule="evenodd"
+                                d="M10.293 15.707a1 1 0 010-1.414L14.586 10l-4.293-4.293a1 1 0 111.414-1.414l5 5a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0z"
+                                clipRule="evenodd"
+                              />
+                              <path
+                                fillRule="evenodd"
+                                d="M4.293 15.707a1 1 0 010-1.414L8.586 10 4.293 5.707a1 1 0 011.414-1.414l5 5a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0z"
+                                clipRule="evenodd"
+                              />
+                            </svg>
+                          </button>
+                        </div>
                       </div>
-                    </div>
-                  )}
-                </form>
+                    )}
+                  </form>
+                )}
+                {currentStep === 3 && membershipId && (
+                  <div className="bg-white p-6 rounded-lg shadow-md mt-6">
+                    <h3 className="text-xl font-semibold mb-4">
+                      Proceed to Payment
+                    </h3>
+                    // Inside return block...
+                    {showPaymentPopup && membershipId && (
+                      <MembershipPaymentPopup
+                        amount={49.99}
+                        membershipId={membershipId}
+                        onClose={() => setShowPaymentPopup(false)}
+                      />
+                    )}
+                  </div>
+                )}
               </div>
             )}
           </div>

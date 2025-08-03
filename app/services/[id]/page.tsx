@@ -6,12 +6,7 @@ import Link from "next/link";
 import DeleteButton from "@/components/DeleteButton";
 import { notFound } from "next/navigation";
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-interface ParamsProps {
-  params: {
-    id: string;
-  };
-}
+import { authOptions } from "@/lib/auth";
 
 async function getService(id: string) {
   await connectDB();
@@ -19,8 +14,13 @@ async function getService(id: string) {
   return JSON.parse(JSON.stringify(service));
 }
 
-export default async function ServiceDetailPage({ params }: ParamsProps) {
-  const service = await getService(params.id);
+export default async function ServiceDetailPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
+  const service = await getService(id);
   const session = await getServerSession(authOptions);
 
   if (!service) notFound();
@@ -72,12 +72,12 @@ export default async function ServiceDetailPage({ params }: ParamsProps) {
       {session && (
         <div className="flex gap-4 mt-10">
           <Link
-            href={`/services/edit/${params.id}`}
+            href={`/services/edit/${id}`}
             className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded"
           >
             Edit
           </Link>
-          <DeleteButton id={params.id} type="services" />
+          <DeleteButton id={id} type="services" />
         </div>
       )}
     </div>

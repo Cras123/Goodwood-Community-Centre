@@ -14,10 +14,6 @@ interface Staff {
 
 const AboutUs: React.FC = () => {
   const [staffList, setStaffList] = useState<Staff[]>([]);
-  const [offerings, setOfferings] = useState([]);
-  const [showForm, setShowForm] = useState(false);
-  const [formData, setFormData] = useState({ title: "", content: "" });
-  const [editId, setEditId] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchStaff = async () => {
@@ -58,11 +54,6 @@ const AboutUs: React.FC = () => {
     visible: { x: 0, opacity: 1, transition: { duration: 0.7 } },
   };
 
-  const staggerChildren = {
-    hidden: {},
-    visible: { transition: { staggerChildren: 0.2 } },
-  };
-
   const cardVariant = {
     hidden: { y: 20, opacity: 0 },
     visible: { y: 0, opacity: 1, transition: { duration: 0.4 } },
@@ -79,9 +70,8 @@ const AboutUs: React.FC = () => {
 
   const heroAnimation = useScrollAnimation();
   const aboutAnimation = useScrollAnimation();
-  const servicesAnimation = useScrollAnimation();
+
   const joinAnimation = useScrollAnimation();
-  const partnersAnimation = useScrollAnimation();
 
   return (
     <div className="flex flex-col min-h-screen">

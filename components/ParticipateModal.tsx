@@ -1,14 +1,30 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ParticipateForm from "./ParticipateForm";
 
-const ParticipateModal = ({ eventId }: { eventId: string }) => {
+interface ParticipateModalProps {
+  eventId: string;
+  cost: string; // e.g., "Free", "$49.99"
+}
+
+const ParticipateModal: React.FC<ParticipateModalProps> = ({
+  eventId,
+  cost,
+}) => {
   const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    const handleEsc = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+    document.addEventListener("keydown", handleEsc);
+    return () => document.removeEventListener("keydown", handleEsc);
+  }, []);
 
   return (
     <>
-      {/* Button to open modal */}
+      {/* Trigger Button */}
       <button
         onClick={() => setOpen(true)}
         className="bg-[#00aba9] hover:bg-[#23677c] text-white font-bold px-6 py-3 rounded-lg transition mt-6"
@@ -16,22 +32,26 @@ const ParticipateModal = ({ eventId }: { eventId: string }) => {
         Book
       </button>
 
-      {/* Modal */}
+      {/* Modal Overlay */}
       {open && (
-        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
-          <div className="bg-white p-8 rounded-xl shadow-lg max-w-lg w-full relative">
-            {/* Close Button */}
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 px-4">
+          <div className="bg-white p-6 sm:p-8 rounded-xl shadow-lg max-w-lg w-full max-h-[90vh] overflow-y-auto relative">
             <button
               onClick={() => setOpen(false)}
               className="absolute top-3 right-4 text-2xl font-bold text-gray-500 hover:text-gray-700"
+              aria-label="Close"
             >
               ×
             </button>
 
-            {/* Form */}
+            <h2 className="text-xl font-semibold text-gray-800 mb-4 text-center">
+              Book This Event
+            </h2>
+
             <ParticipateForm
               eventId={eventId}
-              onSuccess={() => setOpen(false)} // ✅ Close the modal after successful form submission
+              cost={cost}
+              onSuccess={() => setOpen(false)}
             />
           </div>
         </div>

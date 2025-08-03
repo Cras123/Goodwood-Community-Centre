@@ -2,6 +2,7 @@
 import { NextResponse } from "next/server";
 import connectDB from "@/utils/db";
 import HallBooking from "@/models/HallBooking";
+import { sendEmail } from "@/lib/SendMail";
 
 export async function POST(req: Request) {
   try {
@@ -29,6 +30,22 @@ export async function POST(req: Request) {
       );
     }
     const booking = await HallBooking.create(body);
+
+    // Send confirmation email to the user who booked
+    try {
+      await sendEmail(
+        body.email,
+        "Booking Confirmation - Your Hall Booking is Confirmed",
+        `<h1>Booking Confirmation</h1>
+         <p>Dear ${body.name},</p>
+         <p>Your booking for hall ID <strong>${body.hallId}</strong> on <strong>${body.eventDate}</strong> has been confirmed.</p>
+         <p>Thank you for booking with us!</p>
+         <p>Please meet our receptionist for payment and further information at Goodwood Community Centre </p>`
+      );
+    } catch (emailError) {
+      console.error("Error sending booking confirmation email:", emailError);
+      // Optionally handle email failure separately or notify caller
+    }
 
     return NextResponse.json({ success: true, booking }, { status: 201 });
   } catch (error) {

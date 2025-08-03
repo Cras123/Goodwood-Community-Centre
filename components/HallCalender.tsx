@@ -39,6 +39,10 @@ export default function HallCalendar({ events }: Props) {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [showForm, setShowForm] = useState(false);
 
+  const localDateString = selectedDate
+    ? selectedDate.toLocaleDateString("en-CA") // e.g. "2025-07-16"
+    : "";
+
   return (
     <div className="h-[700px] mt-6 px-4">
       <Calendar
@@ -94,18 +98,33 @@ export default function HallCalendar({ events }: Props) {
         }}
       />
       {showForm && selectedDate && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-2xl relative">
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40"
+          aria-modal="true"
+          role="dialog"
+          tabIndex={-1}
+        >
+          <div
+            className="relative bg-white rounded-xl shadow-2xl w-full max-w-2xl p-6 pt-16"
+            style={{
+              maxHeight: "80vh", // Limit height to 80% of viewport height
+              overflowY: "auto", // Enable vertical scrolling inside modal
+              boxShadow: "0 8px 40px rgba(0,0,0,0.18)",
+            }}
+          >
             <button
               onClick={() => setShowForm(false)}
-              className="absolute top-2 right-2 text-gray-600 hover:text-black text-xl"
+              className="absolute top-4 right-4 text-gray-400 hover:text-red-600 text-2xl focus:outline-none focus:ring-2 focus:ring-red-300 rounded-full z-20"
+              aria-label="Close booking form"
             >
-              ✕
+              &times;
             </button>
-            <BookingForm
-              rules={hallRules} // 👈 Replace with your actual HallRules object
-              defaultDate={selectedDate.toISOString().split("T")[0]}
-            />
+
+            <h2 className="text-2xl font-bold text-center mb-6 text-green-700">
+              Booking Inquiry
+            </h2>
+
+            <BookingForm rules={hallRules} defaultDate={localDateString} />
           </div>
         </div>
       )}

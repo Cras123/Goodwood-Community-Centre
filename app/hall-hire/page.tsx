@@ -90,6 +90,22 @@ const HireHallPage: React.FC = () => {
               <h2 className="text-3xl font-semibold text-gray-800 border-b pb-2">
                 Available Spaces
               </h2>
+              <div className="flex space-x-6">
+                <div className="flex items-center space-x-2">
+                  <div className="w-5 h-5 bg-blue-500 rounded"></div>
+                  <span className="text-gray-700">Event</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <div className="w-5 h-5 bg-red-500 rounded"></div>
+                  <span className="text-gray-700">Hall Hire</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <div className="w-5 h-5 bg-green-300 rounded"></div>
+                  <span className="text-gray-700">
+                    Click on dates to book or scroll
+                  </span>
+                </div>
+              </div>
               {halls.length > 0 ? (
                 halls.map((hall) => (
                   <div key={hall.id} className="mb-10">
@@ -118,5 +134,4 @@ const HireHallPage: React.FC = () => {
     </div>
   );
 };
-
 export default HireHallPage;

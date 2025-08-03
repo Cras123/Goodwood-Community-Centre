@@ -23,6 +23,30 @@ const ServicesPage = () => {
     };
     fetchServices();
   }, []);
+  async function handleSendEmail() {
+    try {
+      const response = await fetch("/api/SendEmail", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          to: "12201072@students.koi.edu.au", // Replace with the actual recipient
+          subject: `Information about test`,
+          html: `<h1>this is test}</h1><p>Category: </p>`,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        alert("Email sent successfully!");
+      } else {
+        alert(`Failed to send email: ${data.error || "Unknown error"}`);
+      }
+    } catch (error) {
+      alert("Error sending email");
+      console.error(error);
+    }
+  }
 
   return (
     <motion.div
@@ -54,7 +78,12 @@ const ServicesPage = () => {
             hire and workshops to social events and support programs.
           </p>
         </div>
-
+        <button
+          onClick={() => handleSendEmail()}
+          className="mt-4 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition"
+        >
+          Send Email
+        </button>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {services.map((service) => (
             <motion.div

@@ -1,33 +1,76 @@
-// src/components/HireHall/BookingForm.tsx
-import React, { useState } from "react";
-import { halls as availableHalls } from "@/data/hallData"; // Import halls for dropdown
-import { HallRules, BookingFormData } from "@/app/types/hallTypes"; // Import types
+import React, { useState, useEffect, useRef } from "react";
+import { halls as availableHalls } from "@/data/hallData";
+import { HallRules, BookingFormData } from "@/app/types/hallTypes";
 import { useSearchParams } from "next/navigation";
 
 interface BookingFormProps {
-  rules: HallRules; // Rules object is expected
+  rules: HallRules;
   defaultDate?: string;
+  onClose?: () => void; // Optional close handler for modal
 }
 
-const BookingForm: React.FC<BookingFormProps> = ({ rules }) => {
+const BookingForm: React.FC<BookingFormProps> = ({
+  rules,
+  defaultDate,
+  onClose,
+}) => {
   const searchParams = useSearchParams();
-  const selectedDate = searchParams.get("date"); // e.g. "2025-06-01"
+  const selectedDate = defaultDate || searchParams.get("date") || "";
 
   const initialFormData: BookingFormData = {
     name: "",
     email: "",
     phone: "",
-    hallId: availableHalls[0]?.id || "", // Default to first hall
-    eventDate: selectedDate || "",
+    hallId: availableHalls[0]?.id || "",
+    eventDate: selectedDate,
     startTime: "",
     endTime: "",
     eventType: "",
     message: "",
   };
+
   const [formData, setFormData] = useState<BookingFormData>(initialFormData);
   const [statusMessage, setStatusMessage] = useState<string>("");
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  // Type the event parameter for input/select/textarea changes
+  // Focus the first input on open
+  const nameInputRef = useRef<HTMLInputElement>(null);
+  useEffect(() => {
+    nameInputRef.current?.focus();
+  }, []);
+
+  // Update eventDate if defaultDate changes (e.g., when opening the modal)
+  useEffect(() => {
+    setFormData((prev) => ({
+      ...prev,
+      eventDate: selectedDate,
+    }));
+  }, [selectedDate]);
+
+  // Validation
+  const validate = () => {
+    if (
+      !formData.name ||
+      !formData.email ||
+      !formData.hallId ||
+      !formData.eventDate
+    ) {
+      setError("Please fill in all required fields.");
+      return false;
+    }
+    if (
+      formData.startTime &&
+      formData.endTime &&
+      formData.startTime >= formData.endTime
+    ) {
+      setError("End time must be after start time.");
+      return false;
+    }
+    setError(null);
+    return true;
+  };
+
   const handleChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
@@ -39,14 +82,15 @@ const BookingForm: React.FC<BookingFormProps> = ({ rules }) => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (!validate()) return;
+
+    setSubmitting(true);
     setStatusMessage("Submitting your inquiry...");
 
     try {
       const response = await fetch("/api/bookings", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
 
@@ -55,6 +99,7 @@ const BookingForm: React.FC<BookingFormProps> = ({ rules }) => {
         setStatusMessage(
           error.error || "This hall is already booked for the selected date."
         );
+        setSubmitting(false);
         return;
       }
 
@@ -63,19 +108,32 @@ const BookingForm: React.FC<BookingFormProps> = ({ rules }) => {
         `Thank you, ${result.booking.name}! Your booking for ${result.booking.eventDate} has been received.`
       );
       setFormData(initialFormData); // Reset form
+      setSubmitting(false);
     } catch (err: any) {
-      console.error("Booking failed:", err);
       setStatusMessage(
         "Error submitting your booking. Please try again later."
       );
+      setSubmitting(false);
     }
   };
 
   return (
     <div
       id="booking-form"
-      className="bg-white shadow-md rounded-lg p-6 border border-gray-200"
+      className="bg-white shadow-md rounded-lg p-6 border border-gray-200 relative"
     >
+      {/* Close button for modal */}
+      {onClose && (
+        <button
+          onClick={onClose}
+          className="absolute top-2 right-2 text-gray-600 hover:text-black text-2xl"
+          aria-label="Close booking form"
+          type="button"
+        >
+          &times;
+        </button>
+      )}
+
       <h3 className="text-2xl font-semibold text-gray-800 mb-4">
         Make a Booking Inquiry
       </h3>
@@ -99,7 +157,11 @@ const BookingForm: React.FC<BookingFormProps> = ({ rules }) => {
         .
       </p>
 
-      {statusMessage && (
+      {/* Status/Error Messages */}
+      {error && (
+        <div className="mb-4 p-3 rounded bg-red-100 text-red-800">{error}</div>
+      )}
+      {statusMessage && !error && (
         <div
           className={`mb-4 p-3 rounded ${
             statusMessage.toLowerCase().includes("error")
@@ -112,7 +174,6 @@ const BookingForm: React.FC<BookingFormProps> = ({ rules }) => {
       )}
 
       <form onSubmit={handleSubmit} className="space-y-4">
-        {/* Form Fields */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label
@@ -122,6 +183,7 @@ const BookingForm: React.FC<BookingFormProps> = ({ rules }) => {
               Full Name <span className="text-red-500">*</span>
             </label>
             <input
+              ref={nameInputRef}
               type="text"
               id="name"
               name="name"
@@ -129,6 +191,7 @@ const BookingForm: React.FC<BookingFormProps> = ({ rules }) => {
               onChange={handleChange}
               required
               className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+              disabled={submitting}
             />
           </div>
           <div>
@@ -146,6 +209,7 @@ const BookingForm: React.FC<BookingFormProps> = ({ rules }) => {
               onChange={handleChange}
               required
               className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+              disabled={submitting}
             />
           </div>
           <div>
@@ -162,6 +226,7 @@ const BookingForm: React.FC<BookingFormProps> = ({ rules }) => {
               value={formData.phone}
               onChange={handleChange}
               className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+              disabled={submitting}
             />
           </div>
           <div>
@@ -178,6 +243,7 @@ const BookingForm: React.FC<BookingFormProps> = ({ rules }) => {
               onChange={handleChange}
               required
               className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 bg-white"
+              disabled={submitting}
             >
               {availableHalls.map((hall) => (
                 <option key={hall.id} value={hall.id}>
@@ -205,6 +271,7 @@ const BookingForm: React.FC<BookingFormProps> = ({ rules }) => {
               required
               className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
               min={new Date().toISOString().split("T")[0]}
+              disabled={submitting}
             />
           </div>
           <div>
@@ -221,6 +288,7 @@ const BookingForm: React.FC<BookingFormProps> = ({ rules }) => {
               value={formData.startTime}
               onChange={handleChange}
               className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+              disabled={submitting}
             />
           </div>
           <div>
@@ -237,6 +305,7 @@ const BookingForm: React.FC<BookingFormProps> = ({ rules }) => {
               value={formData.endTime}
               onChange={handleChange}
               className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+              disabled={submitting}
             />
           </div>
         </div>
@@ -255,6 +324,7 @@ const BookingForm: React.FC<BookingFormProps> = ({ rules }) => {
             value={formData.eventType}
             onChange={handleChange}
             className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+            disabled={submitting}
           />
         </div>
 
@@ -272,15 +342,21 @@ const BookingForm: React.FC<BookingFormProps> = ({ rules }) => {
             value={formData.message}
             onChange={handleChange}
             className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+            disabled={submitting}
           ></textarea>
         </div>
 
         <div>
           <button
             type="submit"
-            className="w-full sm:w-auto px-6 py-2 bg-green-600 text-white font-semibold rounded-md shadow hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition duration-150 ease-in-out"
+            disabled={submitting}
+            className={`w-full sm:w-auto px-6 py-2 font-semibold rounded-md shadow focus:outline-none focus:ring-2 focus:ring-offset-2 transition duration-150 ease-in-out ${
+              submitting
+                ? "bg-gray-400 text-gray-700 cursor-not-allowed"
+                : "bg-green-600 text-white hover:bg-green-700 focus:ring-green-500"
+            }`}
           >
-            Submit Inquiry
+            {submitting ? "Submitting..." : "Submit Inquiry"}
           </button>
         </div>
       </form>

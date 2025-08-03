@@ -1,5 +1,5 @@
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { authOptions } from "@/lib/auth";
 
 import { notFound } from "next/navigation";
 import connectDB from "@/utils/db";
@@ -7,10 +7,6 @@ import Event from "@/models/Events";
 import DeleteButton from "@/components/DeleteButton";
 import ParticipateModal from "@/components/ParticipateModal"; // Add this if not already imported
 import Link from "next/link";
-
-interface Params {
-  params: { id: string };
-}
 
 interface EventType {
   _id: string;
@@ -26,10 +22,17 @@ interface EventType {
   endRepeatDate?: string; // 👈 add this (optional)
 }
 
-export default async function EventDetail({ params }: Params) {
+export default async function EventDetail({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
+
   await connectDB();
   const session = await getServerSession(authOptions);
-  const rawEvent = await Event.findById(params.id).lean<EventType>();
+
+  const rawEvent = await Event.findById(id).lean<EventType>();
 
   if (!rawEvent) return notFound();
 
@@ -86,7 +89,9 @@ export default async function EventDetail({ params }: Params) {
 
           {/* Cost */}
           <p className="text-lg font-semibold text-green-600">{event.cost}</p>
-          <ParticipateModal eventId={event._id} />
+          {new Date(event.date) > new Date() && (
+            <ParticipateModal cost={event.cost} eventId={event._id} />
+          )}
         </div>
       </div>
 

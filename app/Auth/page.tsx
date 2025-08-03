@@ -5,8 +5,9 @@ import Link from "next/link";
 import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Header from "../../components/Header";
+import { Suspense } from "react";
 
-const AuthPage = () => {
+const AuthPage = (): React.JSX.Element => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -117,4 +118,10 @@ const AuthPage = () => {
   );
 };
 
-export default AuthPage;
+const AuthPageWithSuspense = () => (
+  <Suspense fallback={<div>Loading...</div>}>
+    <AuthPage />
+  </Suspense>
+);
+
+export default AuthPageWithSuspense;

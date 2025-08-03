@@ -17,6 +17,7 @@ const ContactUs: React.FC = () => {
     message: string;
     type: "success" | "error" | null;
   }>({ message: "", type: null });
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
   // --- CAPTCHA State ---
   const [num1, setNum1] = useState(0);
@@ -47,9 +48,34 @@ const ContactUs: React.FC = () => {
     }
   }, [captchaInput, num1, num2]);
   // --- End CAPTCHA State ---
+  const validateForm = () => {
+    const newErrors: { [key: string]: string } = {};
+
+    if (!formRef.current) return newErrors;
+
+    const formData = new FormData(formRef.current);
+    const name = (formData.get("userName") as string)?.trim();
+    const email = (formData.get("userEmail") as string)?.trim();
+    const message = (formData.get("userMessage") as string)?.trim();
+
+    if (!name) newErrors.userName = "Name is required";
+    if (!email) {
+      newErrors.userEmail = "Email is required";
+    } else if (!/^\S+@\S+\.\S+$/.test(email)) {
+      newErrors.userEmail = "Email format is invalid";
+    }
+    if (!message || message.length < 10)
+      newErrors.userMessage = "Message must be at least 10 characters";
+
+    setErrors(newErrors);
+    return newErrors;
+  };
 
   const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    const newErrors = validateForm();
+    if (Object.keys(newErrors).length > 0) return;
 
     if (!isCaptchaVerified) {
       setFormStatus({ message: "Please complete the CAPTCHA", type: "error" });
@@ -112,9 +138,17 @@ const ContactUs: React.FC = () => {
                 name="userName"
                 required
                 placeholder="Full Name (e.g., Jane Doe)"
-                className="w-full pl-10 p-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className={`w-full pl-10 p-3 border rounded focus:outline-none focus:ring-2 ${
+                  errors.userName
+                    ? "border-red-500 focus:ring-red-500"
+                    : "border-gray-300 focus:ring-blue-500"
+                }`}
               />
+              {errors.userName && (
+                <p className="text-sm text-red-600 mt-1">{errors.userName}</p>
+              )}
             </div>
+
             {/* Phone Number Input */}
             <div className="relative">
               <FaPhone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
@@ -136,9 +170,17 @@ const ContactUs: React.FC = () => {
                 name="userEmail"
                 required
                 placeholder="Email Address (e.g., jane.doe@example.com)"
-                className="w-full pl-10 p-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className={`w-full pl-10 p-3 border rounded focus:outline-none focus:ring-2 ${
+                  errors.userEmail
+                    ? "border-red-500 focus:ring-red-500"
+                    : "border-gray-300 focus:ring-blue-500"
+                }`}
               />
+              {errors.userEmail && (
+                <p className="text-sm text-red-600 mt-1">{errors.userEmail}</p>
+              )}
             </div>
+
             {/* Message Textarea */}
             <div className="relative">
               <FaComments className="absolute left-3 top-3 text-gray-500" />
@@ -148,8 +190,17 @@ const ContactUs: React.FC = () => {
                 required
                 rows={5}
                 placeholder="How can we help you?"
-                className="w-full pl-10 p-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 resize-y"
+                className={`w-full pl-10 p-3 border rounded focus:outline-none focus:ring-2 resize-y ${
+                  errors.userMessage
+                    ? "border-red-500 focus:ring-red-500"
+                    : "border-gray-300 focus:ring-blue-500"
+                }`}
               ></textarea>
+              {errors.userMessage && (
+                <p className="text-sm text-red-600 mt-1">
+                  {errors.userMessage}
+                </p>
+              )}
             </div>
 
             {/* NDA Checkbox */}

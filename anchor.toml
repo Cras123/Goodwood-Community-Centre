@@ -1,0 +1,10 @@
+[lcl-host]
+realm-apid = 'localhost'
+
+[org]
+apid = 'cras123'
+
+[service]
+apid = 'goodwoodcommunity'
+category = 'Typescript'
+cert-style = 'acme'

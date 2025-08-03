@@ -5,11 +5,11 @@ import Staff from "@/models/Staff";
 // GET single staff
 export async function GET(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await connectDB();
-    const staff = await Staff.findById(params.id);
+    const staff = await Staff.findById(params);
     if (!staff) {
       return new Response("Staff not found", { status: 404 });
     }
@@ -23,12 +23,12 @@ export async function GET(
 // PUT update staff
 export async function PUT(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await connectDB();
     const body = await req.json();
-    const updatedStaff = await Staff.findByIdAndUpdate(params.id, body, {
+    const updatedStaff = await Staff.findByIdAndUpdate(params, body, {
       new: true,
     });
     if (!updatedStaff) {
@@ -44,11 +44,11 @@ export async function PUT(
 // DELETE staff
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await connectDB();
-    await Staff.findByIdAndDelete(params.id);
+    await Staff.findByIdAndDelete(params);
     return new Response("Staff deleted successfully", { status: 200 });
   } catch (error) {
     console.error(error);

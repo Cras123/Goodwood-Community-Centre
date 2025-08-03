@@ -175,10 +175,15 @@ const EditEventPage = () => {
           required
         >
           <option value="">Select Category</option>
-          <option value="Community">Community</option>
-          <option value="Workshop">Workshop</option>
-          <option value="Celebration">Celebration</option>
-          <option value="Health">Health</option>
+          <option value="Weekly Events">Weekly Events</option>
+          <option value="Workshops & Programs">Workshops & Programs</option>
+          <option value="Family & Fun">Family & Fun</option>
+          <option value="Festivals & Celebrations">
+            Festivals & Celebrations
+          </option>
+          <option value="Markets & Fairs">Markets & Fairs</option>
+          <option value="Social & Networking">Social & Networking</option>
+          <option value="Volunteering & Join Us">Volunteering & Join Us</option>
           <option value="Other">Other</option>
         </select>
 

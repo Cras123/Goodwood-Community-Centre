@@ -27,16 +27,19 @@ export async function GET(req: NextRequest) {
 // PUT to update the event
 export async function PUT(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   await connectDB();
   const body = await req.json();
+
   try {
-    const updatedEvent = await Event.findByIdAndUpdate(params.id, body, {
-      new: true,
-    });
+    const { id } = await params;
+
+    const updatedEvent = await Event.findByIdAndUpdate(id, body, { new: true });
+
     return NextResponse.json(updatedEvent);
   } catch (err) {
+    console.error("Failed to update event:", err);
     return NextResponse.json(
       { error: "Failed to update event" },
       { status: 500 }
@@ -45,15 +48,21 @@ export async function PUT(
 }
 
 // DELETE an event
+
 export async function DELETE(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   await connectDB();
+
   try {
-    await Event.findByIdAndDelete(params.id);
+    const { id } = await params; // await Promise to get id string
+
+    await Event.findByIdAndDelete(id);
+
     return NextResponse.json({ success: true });
   } catch (err) {
+    console.error("Failed to delete event:", err);
     return NextResponse.json(
       { error: "Failed to delete event" },
       { status: 500 }

@@ -4,23 +4,39 @@ import Service from "@/models/Services";
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   await connectDB();
-  const service = await Service.findById(params.id);
+
+  const { id } = await params; // Await params, get id string
+
+  const service = await Service.findById(id);
+
+  if (!service) {
+    return NextResponse.json({ error: "Service not found" }, { status: 404 });
+  }
+
   return NextResponse.json(service);
 }
 
 export async function PUT(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await connectDB();
+
+    const { id } = await params; // Await params, get id string
+
     const body = await req.json();
-    const updatedService = await Service.findByIdAndUpdate(params.id, body, {
+
+    const updatedService = await Service.findByIdAndUpdate(id, body, {
       new: true,
     });
+
+    if (!updatedService) {
+      return NextResponse.json({ error: "Service not found" }, { status: 404 });
+    }
 
     return NextResponse.json(updatedService);
   } catch (error) {
@@ -34,11 +50,18 @@ export async function PUT(
 
 export async function DELETE(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await connectDB();
-    await Service.findByIdAndDelete(params.id);
+
+    const { id } = await params; // Await params, get id string
+
+    const deletedService = await Service.findByIdAndDelete(id);
+
+    if (!deletedService) {
+      return NextResponse.json({ error: "Service not found" }, { status: 404 });
+    }
 
     return NextResponse.json(
       { message: "Service deleted successfully" },

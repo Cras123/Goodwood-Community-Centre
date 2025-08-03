@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import ClientLinkWrapper from "./ClientLinkWrapper";
 import {
   FaFacebook,
   FaMapMarkerAlt,
@@ -28,70 +29,90 @@ export default function Footer() {
               Goodwood Community <br /> Centre
             </span>
           </div>
-
           <div className="text-sm leading-relaxed space-y-2 mt-4">
-            <div className="flex items-center gap-2">
+            {/* Address - clickable via Google Maps */}
+            <ClientLinkWrapper
+              href="https://www.google.com/maps/search/?api=1&query=20+Acton+Crescent,+Goodwood+TAS+7010"
+              className="flex items-center gap-2 hover:text-blue-400"
+            >
               <FaMapMarkerAlt size={16} />
               <span>20 Acton Crescent, Goodwood TAS 7010</span>
-            </div>
-            <div className="flex items-center gap-2">
+            </ClientLinkWrapper>
+
+            {/* Email */}
+            <ClientLinkWrapper
+              href="mailto:manager@gwcc.org.au"
+              className="flex items-center gap-2 hover:text-blue-400"
+            >
               <FaEnvelope size={16} />
               <span>manager@gwcc.org.au</span>
-            </div>
-            <div className="flex items-center gap-2">
+            </ClientLinkWrapper>
+
+            {/* Phone */}
+            <ClientLinkWrapper
+              href="tel:0362722560"
+              className="flex items-center gap-2 hover:text-blue-400"
+            >
               <FaPhone size={16} />
               <span>03 6272 2560</span>
-            </div>
-            <div className="flex items-center gap-2">
+            </ClientLinkWrapper>
+
+            {/* Facebook */}
+            <a
+              href="https://www.facebook.com/GoodwoodCommunityCentre"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 hover:text-blue-400"
+            >
               <FaFacebook size={16} />
-              <Link href="#" className="underline hover:text-blue-400">
-                Goodwood Community Centre, Tasmania
-              </Link>
-            </div>
-            <div className="flex items-center gap-2">
+              <span>Goodwood Community Centre, Tasmania</span>
+            </a>
+
+            {/* Opening Hours - optionally link to a Google Calendar or About page */}
+            <a href="#" className="flex items-center gap-2 hover:text-blue-400">
               <FaClock size={16} />
               <span>Open: Monday - Friday, 9:00 AM – 4:00 PM</span>
-            </div>
+            </a>
           </div>
         </div>
-
+        {/* About Links */}
         {/* About Links */}
         <div>
-          <h3 className="text-base font-semibold mb-4 ">ABOUT</h3>
+          <h3 className="text-base font-semibold mb-4">ABOUT</h3>
           <ul className="space-y-2 text-sm">
             <li>
-              <Link href="#">Home</Link>
+              <Link href="/">Home</Link>
             </li>
             <li>
-              <Link href="#">About Us</Link>
+              <Link href="/AboutUs">About Us</Link>
             </li>
             <li>
-              <Link href="#">Hall Hire</Link>
+              <Link href="/hall-hire">Hall Hire</Link>
             </li>
             <li>
-              <Link href="#">Membership</Link>
+              <Link href="/membership">Membership</Link>
             </li>
             <li>
-              <Link href="#">Contact Us</Link>
+              <Link href="/Contactus">Contact Us</Link>
             </li>
           </ul>
         </div>
 
         {/* Services Links */}
         <div>
-          <h3 className="text-base font-semibold mb-4">SERVICES</h3>
+          <h3 className="text-base font-semibold mb-4">ACTIVITIES</h3>
           <ul className="space-y-2 text-sm">
             <li>
-              <Link href="#">Events</Link>
+              <Link href="/events">Events</Link>
             </li>
             <li>
-              <Link href="#">Programs</Link>
+              <Link href="/services">Services</Link>
             </li>
             <li>
-              <Link href="#">Venue Hire</Link>
+              <Link href="/hall-hire">hall Hire</Link>
             </li>
             <li>
-              <Link href="#">Community Support</Link>
+              <Link href="/Donation">Community Support</Link>
             </li>
           </ul>
         </div>
@@ -100,19 +121,6 @@ export default function Footer() {
         <div>
           <h3 className="text-base font-semibold mb-4">QUICK LINKS</h3>
           <ul className="space-y-2 text-sm">
-            <li>
-              <Link href="/events/create">Create Event</Link>
-            </li>
-            <li>
-              <Link href="/services/add">Add Service</Link>
-            </li>
-            <li>
-              <Link href="/Admin/staff">Admin</Link>
-            </li>
-            <li>
-              <Link href="#">Volunteer</Link>
-            </li>
-
             <li>
               <Link href="/Auth">Admin Portal</Link>
             </li>
