@@ -32,7 +32,7 @@ const ResetPasswordPage = () => {
     return password.length >= 8; // Basic validation, enhance as needed
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
 
@@ -49,14 +49,33 @@ const ResetPasswordPage = () => {
 
     setIsLoading(true);
 
-    // Simulate API call
-    setTimeout(() => {
-      console.log("Password reset with token:", token);
-      console.log("New password set (not showing for security)");
+    try {
+      const res = await fetch("/api/auth/reset-password", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          token,
+          password,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setError(data.error || "Password reset failed");
+        setIsLoading(false);
+        return;
+      }
+
       setIsLoading(false);
       setIsSuccess(true);
-      // Add your actual password reset logic here
-    }, 1500);
+    } catch (err) {
+      console.error("Password reset error:", err);
+      setError("Network error. Please try again.");
+      setIsLoading(false);
+    }
   };
 
   const redirectToLogin = () => {

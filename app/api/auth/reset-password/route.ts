@@ -1,4 +1,4 @@
-import dbConnect from "@/utils/db";
+import connectDB from "@/utils/db";
 import User from "@/models/User";
 import mongoose from "mongoose";
 import { hash } from "bcryptjs";
@@ -13,7 +13,7 @@ const TokenSchema = new mongoose.Schema({
 const Token = mongoose.models.Token || mongoose.model("Token", TokenSchema);
 export async function POST(req: Request) {
   try {
-    await dbConnect();
+    await connectDB();
     const body = await req.json();
     const { token, password } = body;
 

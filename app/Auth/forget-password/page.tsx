@@ -8,7 +8,7 @@ const ForgotPasswordPage = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
-  const [testToken, setTestToken] = useState(""); // Optional: for testing without email
+  const [testToken, setTestToken] = useState(""); // For development only
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -28,7 +28,10 @@ const ForgotPasswordPage = () => {
         setError(data.error || "Something went wrong.");
       } else {
         setIsSubmitted(true);
-        setTestToken(data.token); // For testing without email delivery
+        // Only show token in development mode
+        if (process.env.NODE_ENV === "development" && data.token) {
+          setTestToken(data.token);
+        }
       }
     } catch (err) {
       setError("Server error. Please try again.");
@@ -114,18 +117,21 @@ const ForgotPasswordPage = () => {
                 request another link.
               </p>
 
-              {testToken && (
-                <div className="mt-4 text-left">
-                  <p className="text-sm text-gray-500">
-                    For testing (copy this token):
+              {testToken && process.env.NODE_ENV === "development" && (
+                <div className="mt-4 text-left bg-yellow-50 border border-yellow-200 rounded p-3">
+                  <p className="text-sm text-yellow-800 font-medium">
+                    Development Mode - Password Reset Token:
                   </p>
-                  <pre className="bg-gray-100 p-2 mt-1 rounded text-xs break-all">
+                  <p className="text-xs text-yellow-700 mt-1">
+                    Copy this token to test password reset functionality
+                  </p>
+                  <pre className="bg-gray-100 p-2 mt-2 rounded text-xs break-all border">
                     {testToken}
                   </pre>
-                  <p className="text-sm mt-2">
-                    Use it at:{" "}
-                    <code className="font-mono">
-                      /auth/reset-password?token=...
+                  <p className="text-xs mt-2 text-yellow-700">
+                    Test URL:{" "}
+                    <code className="font-mono bg-gray-100 px-1 rounded">
+                      /Auth/reset-password?token={testToken}
                     </code>
                   </p>
                 </div>

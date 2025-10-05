@@ -3,36 +3,66 @@ import React, { useState } from "react";
 import Link from "next/link";
 import Header from "../../../components/Header";
 import { useRouter } from "next/navigation";
+import {
+  validatePassword,
+  getPasswordStrengthText,
+  getPasswordStrengthColor,
+} from "@/lib/passwordValidation";
 
 const SignUpPage = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [errors, setErrors] = useState<string[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setErrors([]);
+    setIsLoading(true);
 
-    if (password !== confirmPassword) {
-      alert("Passwords don't match!");
+    // Validate password
+    const passwordValidation = validatePassword(password);
+    if (!passwordValidation.isValid) {
+      setErrors(passwordValidation.errors);
+      setIsLoading(false);
       return;
     }
 
-    const res = await fetch("/api/auth/register", {
-      method: "POST",
-      body: JSON.stringify({ name, email, password }),
-      headers: { "Content-Type": "application/json" },
-    });
+    if (password !== confirmPassword) {
+      setErrors(["Passwords don't match!"]);
+      setIsLoading(false);
+      return;
+    }
 
-    const data = await res.json();
+    try {
+      const res = await fetch("/api/auth/register", {
+        method: "POST",
+        body: JSON.stringify({ name, email, password }),
+        headers: { "Content-Type": "application/json" },
+      });
 
-    if (res.ok) {
-      alert("Signup successful!");
-      router.push("/Auth"); // redirect to login page
-    } else {
-      alert(data.error || "Signup failed");
+      const data = await res.json();
+
+      if (res.ok) {
+        // Show success message and redirect
+        setErrors([]);
+        router.push("/Auth?message=Registration successful! Please log in.");
+      } else {
+        // Handle both simple error strings and detailed validation errors
+        if (data.details && Array.isArray(data.details)) {
+          setErrors(data.details);
+        } else {
+          setErrors([data.error || "Signup failed"]);
+        }
+      }
+    } catch (error) {
+      setErrors(["Network error. Please try again."]);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -61,6 +91,17 @@ const SignUpPage = () => {
               </button>
             </Link>
           </div>
+
+          {/* Error Messages */}
+          {errors.length > 0 && (
+            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-md">
+              <ul className="text-red-700 text-sm space-y-1">
+                {errors.map((error, index) => (
+                  <li key={index}>• {error}</li>
+                ))}
+              </ul>
+            </div>
+          )}
 
           <form onSubmit={handleSubmit}>
             <div className="mb-4">
@@ -105,6 +146,34 @@ const SignUpPage = () => {
                 className="w-full px-3 py-2 border border-slate-300 rounded focus:outline-none focus:ring-2 focus:ring-[#00855e]"
                 required
               />
+              {/* Password Strength Indicator */}
+              {password && (
+                <div className="mt-2">
+                  <div className="flex items-center space-x-2 mb-1">
+                    <div className="flex-1 bg-gray-200 rounded-full h-2">
+                      <div
+                        className={`h-2 rounded-full transition-all duration-300 ${getPasswordStrengthColor(
+                          validatePassword(password).score
+                        )}`}
+                        style={{
+                          width: `${
+                            (validatePassword(password).score / 4) * 100
+                          }%`,
+                        }}
+                      ></div>
+                    </div>
+                    <span className="text-xs text-gray-600">
+                      {getPasswordStrengthText(
+                        validatePassword(password).score
+                      )}
+                    </span>
+                  </div>
+                  <div className="text-xs text-gray-500">
+                    Password must contain: 8+ characters, uppercase, lowercase,
+                    number, special character
+                  </div>
+                </div>
+              )}
             </div>
 
             <div className="mb-6">
@@ -126,9 +195,14 @@ const SignUpPage = () => {
 
             <button
               type="submit"
-              className="w-full bg-[#00855e] hover:bg-[#00724f] text-white py-3 px-4 rounded font-medium shadow-md transition-all duration-300 transform hover:scale-105 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-[#00855e]"
+              disabled={isLoading}
+              className={`w-full ${
+                isLoading
+                  ? "bg-gray-400 cursor-not-allowed"
+                  : "bg-[#00855e] hover:bg-[#00724f]"
+              } text-white py-3 px-4 rounded font-medium shadow-md transition-all duration-300 transform hover:scale-105 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-[#00855e]`}
             >
-              Sign Up
+              {isLoading ? "Creating Account..." : "Sign Up"}
             </button>
           </form>
         </div>

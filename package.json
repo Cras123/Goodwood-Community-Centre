@@ -21,6 +21,7 @@
     "date-fns": "^4.1.0",
     "framer-motion": "^12.6.2",
     "leaflet": "^1.9.4",
+    "lru-cache": "^11.2.2",
     "lucide-react": "^0.511.0",
     "mongodb": "^5.9.2",
     "mongoose": "^8.13.2",

@@ -11,27 +11,56 @@ const AuthPage = (): React.JSX.Element => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
   const router = useRouter();
   const searchParams = useSearchParams();
-  const error = searchParams.get("error");
+  const urlError = searchParams.get("error");
+  const urlMessage = searchParams.get("message");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    setError("");
 
-    const res = await signIn("credentials", {
-      redirect: false,
-      email,
-      password,
-      callbackUrl: "/dashboard", // or your desired page
-    });
+    // Basic validation
+    if (!email || !password) {
+      setError("Please enter both email and password.");
+      setLoading(false);
+      return;
+    }
 
-    setLoading(false);
+    try {
+      const res = await signIn("credentials", {
+        redirect: false,
+        email,
+        password,
+        callbackUrl: "/dashboard",
+      });
 
-    if (res?.error) {
-      alert("Login failed: Invalid email or password.");
-    } else if (res?.url) {
-      router.push(res.url);
+      if (res?.error) {
+        // Handle specific error cases
+        if (res.error === "CredentialsSignin") {
+          setError("Invalid email or password. Please try again.");
+        } else if (
+          res.error.includes("rate limit") ||
+          res.error.includes("Too many")
+        ) {
+          setError("Too many login attempts. Please try again later.");
+        } else {
+          setError("Login failed. Please try again.");
+        }
+      } else if (res?.url) {
+        router.push(res.url);
+      } else if (res?.ok) {
+        // Successful login
+        router.push("/dashboard");
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+      setError("Network error. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -56,9 +85,19 @@ const AuthPage = (): React.JSX.Element => {
             </Link>
           </div>
 
-          {error && (
-            <div className="mb-4 text-red-500 text-center font-medium">
-              Invalid login credentials.
+          {/* Error Messages */}
+          {(error || urlError) && (
+            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-md">
+              <p className="text-red-700 text-sm text-center">
+                {error || "Invalid login credentials."}
+              </p>
+            </div>
+          )}
+
+          {/* Success Messages */}
+          {urlMessage && (
+            <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded-md">
+              <p className="text-green-700 text-sm text-center">{urlMessage}</p>
             </div>
           )}
 
@@ -97,7 +136,9 @@ const AuthPage = (): React.JSX.Element => {
               type="submit"
               disabled={loading}
               className={`w-full ${
-                loading ? "bg-gray-400" : "bg-[#00855e] hover:bg-[#00724f]"
+                loading
+                  ? "bg-gray-400 cursor-not-allowed"
+                  : "bg-[#00855e] hover:bg-[#00724f]"
               } text-white py-3 px-4 rounded font-medium shadow-md transition-all duration-300 transform hover:scale-105 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-[#00855e]`}
             >
               {loading ? "Logging in..." : "Login"}
